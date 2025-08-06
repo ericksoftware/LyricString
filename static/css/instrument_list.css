@@ -1,0 +1,344 @@
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: white;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .search-section {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .search-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 15px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+
+    .search-input::placeholder {
+        color: rgba(224, 224, 224, 0.6);
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .filter-tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filter-tag {
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        color: #e0e0e0;
+    }
+
+    .filter-tag:hover, .filter-tag.active {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .instruments-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .instrument-card {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .instrument-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    .instrument-header {
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .instrument-icon {
+        font-size: 4rem;
+        color: rgba(255,255,255,0.9);
+        z-index: 2;
+        position: relative;
+    }
+
+    .instrument-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        opacity: 0.9;
+    }
+
+    .instrument-info {
+        padding: 25px;
+    }
+
+    .instrument-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #e0e0e0;
+    }
+
+    .instrument-description {
+        color: #b0b0b0;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .instrument-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 12px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 10px;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 3px;
+    }
+
+    .stat-label {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    .difficulty-section {
+        margin-bottom: 20px;
+    }
+
+    .difficulty-label {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 8px;
+    }
+
+    .difficulty-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .difficulty-progress {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .difficulty-easy .difficulty-progress {
+        width: 30%;
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+    }
+
+    .difficulty-medium .difficulty-progress {
+        width: 60%;
+        background: linear-gradient(90deg, #f39c12, #e67e22);
+    }
+
+    .difficulty-hard .difficulty-progress {
+        width: 90%;
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+    }
+
+    .instrument-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .stats-section {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+    }
+
+    .global-stat-item {
+        padding: 15px;
+        border-radius: 10px;
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .global-stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .global-stat-label {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+
+    .featured-section {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Color variations for different instruments */
+    .guitar .instrument-bg { background: linear-gradient(45deg, #ff4757, #c44569); }
+    .piano .instrument-bg { background: linear-gradient(45deg, #3742fa, #2f3542); }
+    .drums .instrument-bg { background: linear-gradient(45deg, #5f27cd, #341f97); }
+    .violin .instrument-bg { background: linear-gradient(45deg, #10ac84, #00d2d3); }
+    .saxophone .instrument-bg { background: linear-gradient(45deg, #ff9ff3, #ff6348); }
+    .bass .instrument-bg { background: linear-gradient(45deg, #0abde3, #006ba6); }
+    .trumpet .instrument-bg { background: linear-gradient(45deg, #fdcb6e, #e17055); }
+    .cello .instrument-bg { background: linear-gradient(45deg, #a29bfe, #6c5ce7); }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .instruments-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .instruments-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .instruments-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .search-bar {
+            flex-direction: column;
+        }
+        
+        .filter-tags {
+            justify-content: center;
+        }
+
+        .instrument-header {
+            height: 150px;
+        }
+
+        .instrument-icon {
+            font-size: 3rem;
+        }
+    }

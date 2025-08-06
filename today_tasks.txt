@@ -1,0 +1,12 @@
+    Plan for August 2nd
+    
+    ├── users/                    
+    │   ├── login.html         // need to complete the design
+    │   ├── register.html      // need to complete the design
+    │   ├── profile.html       // need to do all
+    │   └── profile_edit.html  // need to do all
+    │
+    └── interactions/            
+        ├── like_button.html   // need to do all
+        └── save_button.html   // need to do all
+

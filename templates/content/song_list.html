@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Songs - LyricString{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/song_list.css' %}">
+<div class="page-header">
+    <h1><i class="fas fa-music"></i> Music Library</h1>
+    <p>Explore our collection of amazing songs</p>
+</div>
+
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">1,247</div>
+            <div class="stat-label">Songs</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">156</div>
+            <div class="stat-label">Artists</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">23</div>
+            <div class="stat-label">Genres</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">89</div>
+            <div class="stat-label">Instruments</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search songs, artists or genres...">
+        <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
+    
+    <div class="filter-tags">
+        <span class="filter-tag active">All</span>
+        <span class="filter-tag">Rock</span>
+        <span class="filter-tag">Pop</span>
+        <span class="filter-tag">Jazz</span>
+        <span class="filter-tag">Classical</span>
+        <span class="filter-tag">Electronic</span>
+        <span class="filter-tag">Folk</span>
+        <span class="filter-tag">Reggae</span>
+    </div>
+</div>
+
+<div class="songs-grid">
+    <!-- Song 1 -->
+    <div class="song-card">
+        <div class="song-cover">
+            <i class="fas fa-music"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Midnight Dreams</div>
+            <div class="song-artist">Luna Rodriguez</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 3:45</span>
+                <span class="song-genre">Pop</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 2 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #ff4757, #c44569);">
+            <i class="fas fa-guitar"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Thunder Road</div>
+            <div class="song-artist">The Wild Storms</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 4:12</span>
+                <span class="song-genre">Rock</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn liked" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 3 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #3742fa, #2f3542);">
+            <i class="fas fa-microphone"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Ocean Waves</div>
+            <div class="song-artist">Marina Blues</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 2:58</span>
+                <span class="song-genre">Jazz</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn saved" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 4 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #5f27cd, #341f97);">
+            <i class="fas fa-headphones"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Digital Dreams</div>
+            <div class="song-artist">CyberSound</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 5:23</span>
+                <span class="song-genre">Electronic</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 5 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #ff9ff3, #ff6348);">
+            <i class="fas fa-drum"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Sunrise Melody</div>
+            <div class="song-artist">Golden Harmony</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 3:17</span>
+                <span class="song-genre">Folk</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn liked" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn saved" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 6 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #0abde3, #006ba6);">
+            <i class="fas fa-piano-keyboard"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Classical Interlude</div>
+            <div class="song-artist">Symphony Orchestra</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 6:45</span>
+                <span class="song-genre">Classical</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 7 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #10ac84, #00d2d3);">
+            <i class="fas fa-violin"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Emerald Nights</div>
+            <div class="song-artist">Celtic Harmony</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 4:32</span>
+                <span class="song-genre">Folk</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 8 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #ff7675, #d63031);">
+            <i class="fas fa-fire"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Burning Soul</div>
+            <div class="song-artist">Phoenix Rising</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 3:58</span>
+                <span class="song-genre">Rock</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn liked" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 9 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #a29bfe, #6c5ce7);">
+            <i class="fas fa-compact-disc"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Neon Lights</div>
+            <div class="song-artist">Electric Pulse</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 4:45</span>
+                <span class="song-genre">Electronic</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn saved" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song 10 -->
+    <div class="song-card">
+        <div class="song-cover" style="background: linear-gradient(45deg, #fdcb6e, #e17055);">
+            <i class="fas fa-sun"></i>
+            <div class="play-overlay">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        <div class="song-info">
+            <div class="song-title">Summer Vibes</div>
+            <div class="song-artist">Tropical Beats</div>
+            <div class="song-details">
+                <span><i class="fas fa-clock"></i> 3:22</span>
+                <span class="song-genre">Reggae</span>
+            </div>
+            <div class="song-actions">
+                <button class="action-btn" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="action-btn" title="Save">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="action-btn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+                <button class="action-btn" title="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Functionality for filters
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Functionality for action buttons
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            if (this.querySelector('.fa-heart')) {
+                this.classList.toggle('liked');
+            } else if (this.querySelector('.fa-bookmark')) {
+                this.classList.toggle('saved');
+            }
+        });
+    });
+
+    // Functionality for playing songs
+    document.querySelectorAll('.song-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const title = this.querySelector('.song-title').textContent;
+            const artist = this.querySelector('.song-artist').textContent;
+            alert(`Now playing: ${title} - ${artist}`);
+        });
+    });
+</script>
+{% endblock %}

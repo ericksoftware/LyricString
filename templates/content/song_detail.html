@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Thunder Road - The Wild Storms - LyricString{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/song_detail.css' %}">
+<div class="song-hero">
+    <div class="song-artwork">
+        <i class="fas fa-guitar"></i>
+        <button class="play-button">
+            <i class="fas fa-play"></i>
+        </button>
+    </div>
+    
+    <div class="song-meta">
+        <h1>Thunder Road</h1>
+        <div class="artist">The Wild Storms</div>
+        
+        <div class="song-info-grid">
+            <div class="info-item">
+                <div class="info-label">Duration</div>
+                <div class="info-value">4:12</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Key</div>
+                <div class="info-value">E Major</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">BPM</div>
+                <div class="info-value">120</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Year</div>
+                <div class="info-value">2023</div>
+            </div>
+        </div>
+        
+        <div class="genre-tag">Rock</div>
+        
+        <div class="action-buttons">
+            <button class="action-btn primary">
+                <i class="fas fa-play"></i> Play Song
+            </button>
+            <button class="action-btn secondary">
+                <i class="fas fa-heart"></i> Like
+            </button>
+            <button class="action-btn secondary">
+                <i class="fas fa-bookmark"></i> Save
+            </button>
+            <button class="action-btn secondary">
+                <i class="fas fa-share"></i> Share
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-music"></i> Song Information
+    </h2>
+    <p style="color: #b0b0b0; line-height: 1.6; font-size: 1.1rem;">
+        "Thunder Road" is an electrifying rock anthem that showcases The Wild Storms' signature sound. 
+        With powerful guitar riffs and driving percussion, this song takes listeners on a journey through 
+        stormy emotions and triumphant resilience. Perfect for intermediate guitarists looking to master 
+        classic rock techniques.
+    </p>
+</div>
+
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-guitar"></i> Instruments & Difficulty
+    </h2>
+    <div class="instruments-grid">
+        <div class="instrument-card">
+            <div class="instrument-icon">
+                <i class="fas fa-guitar"></i>
+            </div>
+            <div class="instrument-name">Electric Guitar</div>
+            <span class="difficulty-badge difficulty-medium">Medium</span>
+        </div>
+        <div class="instrument-card">
+            <div class="instrument-icon">
+                <i class="fas fa-guitar"></i>
+            </div>
+            <div class="instrument-name">Bass Guitar</div>
+            <span class="difficulty-badge difficulty-easy">Easy</span>
+        </div>
+        <div class="instrument-card">
+            <div class="instrument-icon">
+                <i class="fas fa-drum"></i>
+            </div>
+            <div class="instrument-name">Drums</div>
+            <span class="difficulty-badge difficulty-medium">Medium</span>
+        </div>
+        <div class="instrument-card">
+            <div class="instrument-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <div class="instrument-name">Vocals</div>
+            <span class="difficulty-badge difficulty-hard">Hard</span>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-music"></i> Chord Progression
+    </h2>
+    <div class="chord-progression">
+        <div class="chord-item">
+            <div class="chord-name">E</div>
+            <div class="chord-type">Major</div>
+        </div>
+        <div class="chord-item">
+            <div class="chord-name">A</div>
+            <div class="chord-type">Major</div>
+        </div>
+        <div class="chord-item">
+            <div class="chord-name">B</div>
+            <div class="chord-type">Major</div>
+        </div>
+        <div class="chord-item">
+            <div class="chord-name">C#m</div>
+            <div class="chord-type">Minor</div>
+        </div>
+        <div class="chord-item">
+            <div class="chord-name">F#m</div>
+            <div class="chord-type">Minor</div>
+        </div>
+        <div class="chord-item">
+            <div class="chord-name">A</div>
+            <div class="chord-type">Major</div>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-file-alt"></i> Lyrics & Tabs
+    </h2>
+    
+    <div class="tabs-container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="lyrics">Lyrics</button>
+            <button class="tab-btn" data-tab="guitar-tabs">Guitar Tabs</button>
+            <button class="tab-btn" data-tab="bass-tabs">Bass Tabs</button>
+        </div>
+        
+        <div class="tab-content active" id="lyrics">
+            <div class="lyrics-container">
+Lightning strikes across the sky tonight
+Thunder rolls like drums in my mind
+Walking down this endless thunder road
+Where the storm and I are intertwined
+
+[Chorus]
+Thunder road, take me home
+Through the lightning and the rain
+Thunder road, I'm not alone
+When the storm calls out my name
+
+Verse 2:
+Electric air fills up my lungs with fire
+Every step echoes like a roar
+On this path where wild hearts never tire
+I found what I was searching for
+
+[Chorus]
+Thunder road, take me home
+Through the lightning and the rain
+Thunder road, I'm not alone
+When the storm calls out my name
+
+[Bridge]
+In the eye of the hurricane
+I found my peace, I found my way
+No more running from the pain
+Thunder road will light the way
+
+[Final Chorus]
+Thunder road, take me home
+Through the lightning and the rain
+Thunder road, I'm not alone
+When the storm calls out my name
+Thunder road, thunder road
+When the storm calls out my name
+            </div>
+        </div>
+        
+        <div class="tab-content" id="guitar-tabs">
+            <div class="lyrics-container">
+[Intro]
+E|--0--0--0--0--|
+B|--0--2--4--5--|
+G|--1--2--4--6--|
+D|--2--2--4--6--|
+A|--2--0--2--4--|
+E|--0-----------|
+
+[Verse] - E A B C#m
+E|--0--0--2--4--|
+B|--0--2--4--5--|
+G|--1--2--4--6--|
+D|--2--2--4--6--|
+A|--2--0--2--4--|
+E|--0-----------|
+
+[Chorus] - F#m A E B
+E|--2--0--0--2--|
+B|--2--2--0--4--|
+G|--2--2--1--4--|
+D|--4--2--2--4--|
+A|--4--0--2--2--|
+E|--2-----0-----|
+            </div>
+        </div>
+        
+        <div class="tab-content" id="bass-tabs">
+            <div class="lyrics-container">
+[Intro]
+G|-----------------|
+D|-----------------|
+A|--7--7--9--11----|
+E|-----------------|
+
+[Verse]
+G|-----------------|
+D|-----------------|
+A|--7--7--9--11----|
+E|-----------------|
+
+[Chorus]
+G|-----------------|
+D|--4--4--2--4-----|
+A|-----------------|
+E|-----------------|
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab functionality
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Play button functionality
+    document.querySelector('.play-button').addEventListener('click', function() {
+        alert('Playing: Thunder Road - The Wild Storms');
+    });
+
+    // Action buttons functionality
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            const text = this.textContent.trim();
+            
+            if (icon.classList.contains('fa-heart')) {
+                icon.classList.toggle('fas');
+                icon.classList.toggle('far');
+                this.style.color = icon.classList.contains('fas') ? '#e74c3c' : '';
+            } else if (icon.classList.contains('fa-bookmark')) {
+                icon.classList.toggle('fas');
+                icon.classList.toggle('far');
+                this.style.color = icon.classList.contains('fas') ? '#f39c12' : '';
+            }
+        });
+    });
+</script>
+{% endblock %}

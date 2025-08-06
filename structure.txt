@@ -1,0 +1,59 @@
+project/
+├── config/                   # main project config
+│   ├── __init__.py
+│   ├── settings.py           # Database, installed apps, etc.
+│   ├── urls.py               # Main URL routing
+│   └── wsgi.py
+│
+├── users/                    # App (1) - User management
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py              # Registration/profile forms
+│   ├── models.py             # Custom User model + Profile
+│   ├── urls.py               # auth routes
+│   └── views.py              # auth views
+│
+├── content/                  # App (2) - Core music content
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py              # Song upload/edit forms
+│   ├── models.py             # Song, Instrument, Genre models
+│   ├── urls.py
+│   └── views.py              # Song listing/detail views
+│
+├── interactions/             # App (3) - User engagement
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── apps.py
+│   ├── models.py             # Like/Save models
+│   ├── urls.py
+│   └── views.py              # interaction views
+│
+├── static/                   # Global static files
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+└── templates/
+    ├── base.html                 # base template
+    │
+    ├── content/                  # Content app templates
+    │   ├── song_list.html
+    │   ├── song_detail.html
+    │   └── instrument_list.html
+    │
+    ├── users/                    # Users app templates
+    │   ├── login.html
+    │   ├── register.html
+    │   ├── profile.html
+    │   └── profile_edit.html
+    │
+    └── interactions/             # Interactions partial templates
+        ├── like_button.html
+        └── save_button.html
+
+

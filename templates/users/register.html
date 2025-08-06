@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Register - LyricString{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1>Join LyricString</h1>
+            <p>Create your account and start your musical journey</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText">Please check your information and try again.</span>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Account created successfully! Redirecting...
+        </div>
+
+        <form id="registerForm" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="firstName">First Name</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            name="firstName" 
+                            class="form-input" 
+                            placeholder="John"
+                            required
+                            minlength="2"
+                        >
+                    </div>
+                    <div class="field-error" id="firstNameError">First name must be at least 2 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="lastName">Last Name</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            name="lastName" 
+                            class="form-input" 
+                            placeholder="Doe"
+                            required
+                            minlength="2"
+                        >
+                    </div>
+                    <div class="field-error" id="lastNameError">Last name must be at least 2 characters</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <div class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="john.doe@example.com"
+                        required
+                    >
+                </div>
+                <div class="field-error" id="emailError">Please enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Create a strong password"
+                        required
+                        minlength="8">
+                    <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+                </div>
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span id="strengthText">Password strength: Weak</span>
+                </div>
+                <div class="field-error" id="passwordError">Password must be at least 8 characters long</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-input" 
+                        placeholder="Confirm your password"
+                        required
+                    >
+                    <i class="fas fa-eye password-toggle" id="confirmPasswordToggle"></i>
+                </div>
+                <div class="field-error" id="confirmPasswordError">Passwords do not match</div>
+            </div>
+
+            <div class="terms-checkbox">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
+                    <a href="/privacy" target="_blank">Privacy Policy</a>. I also agree to receive 
+                    marketing communications from LyricString.
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                <span id="btnText">Create Account</span>
+                <span id="btnLoading" class="loading" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>or sign up with</span>
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn" type="button">
+                <i class="fab fa-google"></i>
+                Google
+            </button>
+            <button class="social-btn" type="button">
+                <i class="fab fa-facebook"></i>
+                Facebook
+            </button>
+        </div>
+
+        <div class="auth-footer">
+            Already have an account? <a href="/login">Sign In</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form elements
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoading = document.getElementById('btnLoading');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const termsCheckbox = document.getElementById('terms');
+
+    // Password elements
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirmPassword');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+    const strengthBar = document.getElementById('passwordStrength');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+
+    // Password toggle functionality
+    function setupPasswordToggle(toggleBtn, passwordField) {
+        toggleBtn.addEventListener('click', function() {
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    }
+
+    setupPasswordToggle(passwordToggle, passwordField);
+    setupPasswordToggle(confirmPasswordToggle, confirmPasswordField);
+
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        let text = 'Weak';
+        let className = 'strength-weak';
+
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]+/)) strength++;
+        if (password.match(/[A-Z]+/)) strength++;
+        if (password.match(/[0-9]+/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]+/)) strength++;
+
+        if (strength >= 3) {
+            text = 'Medium';
+            className = 'strength-medium';
+        }
+        if (strength >= 5) {
+            text = 'Strong';
+            className = 'strength-strong';
+        }
+
+        strengthBar.className = 'password-strength ' + className;
+        strengthText.textContent = 'Password strength: ' + text;
+
+        return strength >= 3;
+    }
+
+    // Real-time validation
+    function validateField(field, errorElement, validationFn) {
+        field.addEventListener('blur', function() {
+            const isValid = validationFn(this.value);
+            if (isValid) {
+                this.style.borderColor = 'rgba(46, 204, 113, 0.5)';
+                errorElement.style.display = 'none';
+            } else if (this.value) {
+                this.style.borderColor = '#e74c3c';
+                errorElement.style.display = 'block';
+            }
+            updateSubmitButton();
+        });
+
+        field.addEventListener('input', function() {
+            if (this.style.borderColor === 'rgb(231, 76, 60)') {
+                const isValid = validationFn(this.value);
+                if (isValid) {
+                    this.style.borderColor = 'rgba(46, 204, 113, 0.5)';
+                    errorElement.style.display = 'none';
+                }
+            }
+            updateSubmitButton();
+        });
+
+        field.addEventListener('focus', function() {
+            this.style.borderColor = '#667eea';
+        });
+    }
+
+    // Validation functions
+    const validations = {
+        firstName: (value) => value.length >= 2,
+        lastName: (value) => value.length >= 2,
+        email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+        password: (value) => checkPasswordStrength(value),
+        confirmPassword: (value) => value === passwordField.value && value.length > 0
+    };
+
+    // Setup field validations
+    Object.keys(validations).forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        const errorElement = document.getElementById(fieldName + 'Error');
+        validateField(field, errorElement, validations[fieldName]);
+    });
+
+    // Password strength real-time checking
+    passwordField.addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+        // Also revalidate confirm password
+        if (confirmPasswordField.value) {
+            const isValid = confirmPasswordField.value === this.value;
+            const confirmError = document.getElementById('confirmPasswordError');
+            if (isValid) {
+                confirmPasswordField.style.borderColor = 'rgba(46, 204, 113, 0.5)';
+                confirmError.style.display = 'none';
+            } else {
+                confirmPasswordField.style.borderColor = '#e74c3c';
+                confirmError.style.display = 'block';
+            }
+        }
+        updateSubmitButton();
+    });
+
+    // Terms checkbox validation
+    termsCheckbox.addEventListener('change', updateSubmitButton);
+
+    // Update submit button state
+    function updateSubmitButton() {
+        const fields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
+        const allValid = fields.every(fieldName => {
+            const field = document.getElementById(fieldName);
+            return field.value && validations[fieldName](field.value);
+        });
+
+        const termsAccepted = termsCheckbox.checked;
+        submitBtn.disabled = !(allValid && termsAccepted);
+    }
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Hide previous messages
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline-block';
+        
+        // Simulate API call
+        setTimeout(() => {
+            // Get form data
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Simulate registration process
+            if (Math.random() > 0.1) { // 90% success rate for demo
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    // Redirect to login or dashboard
+                    window.location.href = '/login?registered=true';
+                }, 2000);
+            } else {
+                // Simulate error (e.g., email already exists)
+                document.getElementById('errorText').textContent = 'Email address is already registered. Please try with a different email.';
+                errorMessage.style.display = 'block';
+                
+                // Reset button state
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                updateSubmitButton();
+            }
+        }, 2500);
+    });
+
+    // Social login buttons
+    document.querySelectorAll('.social-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const provider = this.textContent.trim();
+            alert(`${provider} registration functionality would be implemented here`);
+        });
+    });
+
+    // Initial button state check
+    updateSubmitButton();
+</script>
+{% endblock %}
