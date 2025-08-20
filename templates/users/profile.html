@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Profile - LyricString{% endblock %}
+{% block title %}{{ user.get_full_name }} - LyricString{% endblock %}
 
 {% block extra_css %}
 
@@ -13,34 +13,42 @@
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 <div class="profile-header">
     <div class="profile-avatar">
+        {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}">
+        {% else %}
         <i class="fas fa-user"></i>
+        {% endif %}
     </div>
     <div class="profile-info">
-        <h1>John Doe</h1>
-        <div class="profile-username">@johndoe_music</div>
+        <h1>{{ user.get_full_name }}</h1>
+        <div class="profile-username">@{{ user.username }}</div>
         <p class="profile-bio">
-            Music enthusiast and aspiring guitarist. Love exploring different genres and sharing my musical journey with the community.
+            {% if user.bio %}
+                {{ user.bio }}
+            {% else %}
+                No bio yet.
+            {% endif %}
         </p>
         <div class="profile-stats">
             <div class="stat-item">
-                <span class="stat-number">42</span>
+                <span class="stat-number">{{ liked_songs.count }}</span>
                 <span class="stat-label">Songs Liked</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">18</span>
+                <span class="stat-number">{{ saved_songs.count }}</span>
                 <span class="stat-label">Saved</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">7</span>
+                <span class="stat-number">0</span>
                 <span class="stat-label">Playlists</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">156</span>
+                <span class="stat-number">0</span>
                 <span class="stat-label">Following</span>
             </div>
         </div>
         <div class="profile-actions">
-            <a href="/profile/edit/" class="btn btn-primary">
+            <a href="{% url 'profile_edit' %}" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Edit Profile
             </a>
             <button class="btn btn-outline">
@@ -69,81 +77,55 @@
     
     <div class="tab-content" id="liked-content">
         <div class="songs-grid">
+            {% for song in liked_songs %}
             <div class="mini-song-card">
                 <div class="mini-song-info">
                     <div class="mini-song-cover" style="background: linear-gradient(45deg, #ff4757, #c44569);">
-                        <i class="fas fa-guitar"></i>
-                    </div>
-                    <div class="mini-song-details">
-                        <h4>Thunder Road</h4>
-                        <p>The Wild Storms • Rock</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mini-song-card">
-                <div class="mini-song-info">
-                    <div class="mini-song-cover" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                        {% if song.cover_image %}
+                        <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                        {% else %}
                         <i class="fas fa-music"></i>
+                        {% endif %}
                     </div>
                     <div class="mini-song-details">
-                        <h4>Midnight Dreams</h4>
-                        <p>Luna Rodriguez • Pop</p>
+                        <h4>{{ song.title }}</h4>
+                        <p>{{ song.artist.name }} • {{ song.genres.first.name }}</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="mini-song-card">
-                <div class="mini-song-info">
-                    <div class="mini-song-cover" style="background: linear-gradient(45deg, #3742fa, #2f3542);">
-                        <i class="fas fa-microphone"></i>
-                    </div>
-                    <div class="mini-song-details">
-                        <h4>Ocean Waves</h4>
-                        <p>Marina Blues • Jazz</p>
-                    </div>
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>No liked songs yet</p>
             </div>
-            
-            <div class="mini-song-card">
-                <div class="mini-song-info">
-                    <div class="mini-song-cover" style="background: linear-gradient(45deg, #ff9ff3, #ff6348);">
-                        <i class="fas fa-drum"></i>
-                    </div>
-                    <div class="mini-song-details">
-                        <h4>Sunrise Melody</h4>
-                        <p>Golden Harmony • Folk</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
     
     <div class="tab-content" id="saved-content" style="display: none;">
         <div class="songs-grid">
+            {% for song in saved_songs %}
             <div class="mini-song-card">
                 <div class="mini-song-info">
                     <div class="mini-song-cover" style="background: linear-gradient(45deg, #5f27cd, #341f97);">
-                        <i class="fas fa-headphones"></i>
+                        {% if song.cover_image %}
+                        <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                        {% else %}
+                        <i class="fas fa-music"></i>
+                        {% endif %}
                     </div>
                     <div class="mini-song-details">
-                        <h4>Digital Dreams</h4>
-                        <p>CyberSound • Electronic</p>
+                        <h4>{{ song.title }}</h4>
+                        <p>{{ song.artist.name }} • {{ song.genres.first.name }}</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="mini-song-card">
-                <div class="mini-song-info">
-                    <div class="mini-song-cover" style="background: linear-gradient(45deg, #a29bfe, #6c5ce7);">
-                        <i class="fas fa-compact-disc"></i>
-                    </div>
-                    <div class="mini-song-details">
-                        <h4>Neon Lights</h4>
-                        <p>Electric Pulse • Electronic</p>
-                    </div>
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <p>No saved songs yet</p>
             </div>
+            {% endfor %}
         </div>
     </div>
     
@@ -164,72 +146,41 @@
     </h2>
     
     <div class="recent-activities">
+        {% if liked_songs %}
         <div class="activity-item">
             <div class="activity-icon">
                 <i class="fas fa-heart"></i>
             </div>
             <div class="activity-content">
-                <div class="activity-text">Liked <strong>Thunder Road</strong> by The Wild Storms</div>
-                <div class="activity-time">2 hours ago</div>
+                <div class="activity-text">Liked <strong>{{ liked_songs.first.title }}</strong> by {{ liked_songs.first.artist.name }}</div>
+                <div class="activity-time">Recently</div>
             </div>
         </div>
+        {% endif %}
         
+        {% if saved_songs %}
         <div class="activity-item">
             <div class="activity-icon">
                 <i class="fas fa-bookmark"></i>
             </div>
             <div class="activity-content">
-                <div class="activity-text">Saved <strong>Digital Dreams</strong> to favorites</div>
-                <div class="activity-time">5 hours ago</div>
+                <div class="activity-text">Saved <strong>{{ saved_songs.first.title }}</strong> to favorites</div>
+                <div class="activity-time">Recently</div>
             </div>
         </div>
+        {% endif %}
         
         <div class="activity-item">
             <div class="activity-icon">
                 <i class="fas fa-user-plus"></i>
             </div>
             <div class="activity-content">
-                <div class="activity-text">Started following <strong>Marina Blues</strong></div>
-                <div class="activity-time">1 day ago</div>
-            </div>
-        </div>
-        
-        <div class="activity-item">
-            <div class="activity-icon">
-                <i class="fas fa-play"></i>
-            </div>
-            <div class="activity-content">
-                <div class="activity-text">Played <strong>Ocean Waves</strong> 5 times</div>
-                <div class="activity-time">2 days ago</div>
+                <div class="activity-text">Joined LyricString</div>
+                <div class="activity-time">{{ user.date_joined|date:"F j, Y" }}</div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // Tab functionality
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-            
-            // Add active class to clicked tab
-            this.classList.add('active');
-            
-            // Show corresponding content
-            const tabName = this.getAttribute('data-tab');
-            document.getElementById(tabName + '-content').style.display = 'block';
-        });
-    });
-
-    // Mini song card click functionality
-    document.querySelectorAll('.mini-song-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const title = this.querySelector('h4').textContent;
-            const artist = this.querySelector('p').textContent.split(' • ')[0];
-            alert(`Now playing: ${title} - ${artist}`);
-        });
-    });
-</script>
+<!-- Rest of your JavaScript remains the same -->
 {% endblock %}

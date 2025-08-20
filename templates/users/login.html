@@ -21,25 +21,26 @@
             <p>Sign in to your LyricString account</p>
         </div>
 
-        <div class="error-message" id="errorMessage">
-            <i class="fas fa-exclamation-circle"></i> Invalid credentials. Please try again.
+        {% if messages %}
+        <div class="error-message">
+            {% for message in messages %}
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+            {% endfor %}
         </div>
-
-        <div class="success-message" id="successMessage">
-            <i class="fas fa-check-circle"></i> Login successful! Redirecting...
-        </div>
+        {% endif %}
 
         <form id="loginForm" method="post">
+            {% csrf_token %}
             <div class="form-group">
-                <label class="form-label" for="email">Email Address</label>
+                <label class="form-label" for="username">Username</label>
                 <div class="input-icon">
-                    <i class="fas fa-envelope"></i>
+                    <i class="fas fa-user-tag"></i>
                     <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
+                        type="text" 
+                        id="username" 
+                        name="username" 
                         class="form-input" 
-                        placeholder="Enter your email"
+                        placeholder="Enter your username"
                         required
                     >
                 </div>
@@ -69,10 +70,10 @@
                 <a href="#" class="forgot-password">Forgot Password?</a>
             </div>
 
-            <a href="/" type="submit" class="submit-btn" id="submitBtn">
+            <button type="submit" class="submit-btn" id="submitBtn">
                 <span id="btnText">Sign In</span>
                 <span id="btnLoading" class="loading" style="display: none;"></span>
-            </a>
+            </button>
         </form>
 
         <div class="divider">
@@ -91,7 +92,7 @@
         </div>
 
         <div class="auth-footer">
-            Don't have an account? <a href="/register">Create Account</a>
+            Don't have an account? <a href="{% url 'register' %}">Create Account</a>
         </div>
     </div>
 </div>
@@ -100,81 +101,15 @@
     // Password toggle functionality
     document.getElementById('passwordToggle').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
-        const icon = this;
-        
         if (passwordField.type === 'password') {
             passwordField.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
         } else {
             passwordField.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
         }
-    });
-
-    // Form submission
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnLoading = document.getElementById('btnLoading');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        
-        // Hide previous messages
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-        
-        // Show loading state
-        submitBtn.disabled = true;
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'inline-block';
-        
-        // Simulate API call
-        setTimeout(() => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple validation (replace with actual authentication)
-            if (email && password.length >= 6) {
-                successMessage.style.display = 'block';
-                setTimeout(() => {
-                    // Redirect to song_list or home page
-                    window.location.href = '/';
-                }, 1500);
-            } else {
-                errorMessage.style.display = 'block';
-                // Reset button state
-                submitBtn.disabled = false;
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-            }
-        }, 2000);
-    });
-
-    // Social login buttons
-    document.querySelectorAll('.social-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const provider = this.textContent.trim();
-            alert(`${provider} login functionality would be implemented here`);
-        });
-    });
-
-    // Input validation feedback
-    document.querySelectorAll('.form-input').forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.checkValidity()) {
-                this.style.borderColor = 'rgba(46, 204, 113, 0.5)';
-            } else if (this.value) {
-                this.style.borderColor = '#e74c3c';
-            }
-        });
-        
-        input.addEventListener('focus', function() {
-            this.style.borderColor = '#667eea';
-        });
     });
 </script>
 {% endblock %}

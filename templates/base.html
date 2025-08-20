@@ -1,16 +1,15 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}LyricString - Tu Plataforma Musical{% endblock %}</title>
+    <title>{% block title %}LyricString - Your Music Platform{% endblock %}</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -22,15 +21,42 @@
             </a>
             
             <ul class="nav-menu">
-                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/songs/"><i class="fas fa-music"></i> Songs</a></li>
                 <li><a href="/instruments/"><i class="fas fa-guitar"></i> Instruments</a></li>
                 <li><a href="/genres/"><i class="fas fa-list"></i> Genres</a></li>
+                {% if user.is_staff %}
+                <li><a href="/dashboard/"><i class="fas fa-tachometer-alt"></i> Admin</a></li>
+                {% endif %}
             </ul>
             
             <div class="user-actions">
-                <a href="/login/" class="btn btn-outline">Sign in</a>
-                <a href="/register/" class="btn btn-primary">Sing up</a>
+                {% if user.is_authenticated %}
+                <div class="user-profile">
+                    <div class="profile-dropdown">
+                        <button class="profile-btn">
+                            {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="profile-pic">
+                            {% else %}
+                            <div class="profile-pic default"><i class="fas fa-user"></i></div>
+                            {% endif %}
+                            <span class="username">{{ user.username }}</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{% url 'profile' %}" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+                            <form method="post" action="#" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item logout-btn" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline">Sign in</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Sign up</a>
+                {% endif %}
             </div>
         </nav>
     </header>
@@ -62,13 +88,26 @@
     </footer>
 
     <script>
-        // Smooth scrolling para enlaces internos
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+        // Toggle dropdown menu
+        document.querySelectorAll('.profile-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = this.closest('.profile-dropdown');
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.profile-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
         });
     </script>

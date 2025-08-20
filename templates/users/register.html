@@ -5,7 +5,6 @@
 {% block title %}Register - LyricString{% endblock %}
 
 {% block extra_css %}
-
 {% endblock %}
 
 {% block content %}
@@ -21,79 +20,103 @@
             <p>Create your account and start your musical journey</p>
         </div>
 
-        <div class="error-message" id="errorMessage">
-            <i class="fas fa-exclamation-circle"></i> <span id="errorText">Please check your information and try again.</span>
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i> 
+            <span id="errorText"></span>
         </div>
 
-        <div class="success-message" id="successMessage">
-            <i class="fas fa-check-circle"></i> Account created successfully! Redirecting...
+        <div class="success-message" id="successMessage" style="display: none;">
+            <i class="fas fa-check-circle"></i> 
+            <span>Registration successful! Redirecting...</span>
         </div>
 
         <form id="registerForm" method="post">
+            {% csrf_token %}
+            
+            <!-- Username Field -->
+            <div class="form-group">
+                <label class="form-label" for="id_username">Username</label>
+                <div class="input-icon">
+                    <i class="fas fa-user-tag"></i>
+                    <input 
+                        type="text" 
+                        id="id_username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Choose a username"
+                        required
+                        minlength="4"
+                        maxlength="150"
+                    >
+                </div>
+                <div class="field-error" id="usernameError"></div>
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label" for="firstName">First Name</label>
+                    <label class="form-label" for="id_first_name">First Name</label>
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
                         <input 
                             type="text" 
-                            id="firstName" 
-                            name="firstName" 
+                            id="id_first_name" 
+                            name="first_name" 
                             class="form-input" 
-                            placeholder="John"
+                            placeholder="Your first name"
                             required
                             minlength="2"
                         >
                     </div>
-                    <div class="field-error" id="firstNameError">First name must be at least 2 characters</div>
+                    <div class="field-error" id="first_nameError"></div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="lastName">Last Name</label>
+                    <label class="form-label" for="id_last_name">Last Name</label>
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
                         <input 
                             type="text" 
-                            id="lastName" 
-                            name="lastName" 
+                            id="id_last_name" 
+                            name="last_name" 
                             class="form-input" 
-                            placeholder="Doe"
+                            placeholder="Your last name"
                             required
                             minlength="2"
                         >
                     </div>
-                    <div class="field-error" id="lastNameError">Last name must be at least 2 characters</div>
+                    <div class="field-error" id="last_nameError"></div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="email">Email Address</label>
+                <label class="form-label" for="id_email">Email Address</label>
                 <div class="input-icon">
                     <i class="fas fa-envelope"></i>
                     <input 
                         type="email" 
-                        id="email" 
+                        id="id_email" 
                         name="email" 
                         class="form-input" 
-                        placeholder="john.doe@example.com"
+                        placeholder="your.email@example.com"
                         required
                     >
                 </div>
-                <div class="field-error" id="emailError">Please enter a valid email address</div>
+                <div class="field-error" id="emailError"></div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="password">Password</label>
+                <label class="form-label" for="id_password1">Password</label>
                 <div class="input-icon">
                     <i class="fas fa-lock"></i>
                     <input 
                         type="password" 
-                        id="password" 
-                        name="password" 
+                        id="id_password1" 
+                        name="password1" 
                         class="form-input" 
                         placeholder="Create a strong password"
                         required
-                        minlength="8">
+                        minlength="8"
+                    >
                     <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
                 </div>
                 <div class="password-strength" id="passwordStrength">
@@ -102,24 +125,24 @@
                     </div>
                     <span id="strengthText">Password strength: Weak</span>
                 </div>
-                <div class="field-error" id="passwordError">Password must be at least 8 characters long</div>
+                <div class="field-error" id="password1Error"></div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                <label class="form-label" for="id_password2">Confirm Password</label>
                 <div class="input-icon">
                     <i class="fas fa-lock"></i>
                     <input 
                         type="password" 
-                        id="confirmPassword" 
-                        name="confirmPassword" 
+                        id="id_password2" 
+                        name="password2" 
                         class="form-input" 
                         placeholder="Confirm your password"
                         required
                     >
                     <i class="fas fa-eye password-toggle" id="confirmPasswordToggle"></i>
                 </div>
-                <div class="field-error" id="confirmPasswordError">Passwords do not match</div>
+                <div class="field-error" id="password2Error"></div>
             </div>
 
             <div class="terms-checkbox">
@@ -131,7 +154,7 @@
                 </label>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+            <button type="submit" class="submit-btn" id="submitBtn">
                 <span id="btnText">Create Account</span>
                 <span id="btnLoading" class="loading" style="display: none;"></span>
             </button>
@@ -153,30 +176,12 @@
         </div>
 
         <div class="auth-footer">
-            Already have an account? <a href="/login">Sign In</a>
+            Already have an account? <a href="{% url 'login' %}">Sign In</a>
         </div>
     </div>
 </div>
 
 <script>
-    // Form elements
-    const form = document.getElementById('registerForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const btnLoading = document.getElementById('btnLoading');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
-    const termsCheckbox = document.getElementById('terms');
-
-    // Password elements
-    const passwordField = document.getElementById('password');
-    const confirmPasswordField = document.getElementById('confirmPassword');
-    const passwordToggle = document.getElementById('passwordToggle');
-    const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
-    const strengthBar = document.getElementById('passwordStrength');
-    const strengthFill = document.getElementById('strengthFill');
-    const strengthText = document.getElementById('strengthText');
-
     // Password toggle functionality
     function setupPasswordToggle(toggleBtn, passwordField) {
         toggleBtn.addEventListener('click', function() {
@@ -192,8 +197,8 @@
         });
     }
 
-    setupPasswordToggle(passwordToggle, passwordField);
-    setupPasswordToggle(confirmPasswordToggle, confirmPasswordField);
+    setupPasswordToggle(document.getElementById('passwordToggle'), document.getElementById('id_password1'));
+    setupPasswordToggle(document.getElementById('confirmPasswordToggle'), document.getElementById('id_password2'));
 
     // Password strength checker
     function checkPasswordStrength(password) {
@@ -216,139 +221,117 @@
             className = 'strength-strong';
         }
 
-        strengthBar.className = 'password-strength ' + className;
-        strengthText.textContent = 'Password strength: ' + text;
+        document.getElementById('passwordStrength').className = 'password-strength ' + className;
+        document.getElementById('strengthText').textContent = 'Password strength: ' + text;
 
         return strength >= 3;
     }
 
-    // Real-time validation
-    function validateField(field, errorElement, validationFn) {
-        field.addEventListener('blur', function() {
-            const isValid = validationFn(this.value);
-            if (isValid) {
-                this.style.borderColor = 'rgba(46, 204, 113, 0.5)';
-                errorElement.style.display = 'none';
-            } else if (this.value) {
-                this.style.borderColor = '#e74c3c';
-                errorElement.style.display = 'block';
-            }
-            updateSubmitButton();
-        });
+    // Real-time password strength checking
+    document.getElementById('id_password1').addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+    });
 
-        field.addEventListener('input', function() {
-            if (this.style.borderColor === 'rgb(231, 76, 60)') {
-                const isValid = validationFn(this.value);
-                if (isValid) {
-                    this.style.borderColor = 'rgba(46, 204, 113, 0.5)';
-                    errorElement.style.display = 'none';
+    // Function to show errors
+    function showError(field, message) {
+        const errorElement = document.getElementById(`${field}Error`);
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        document.getElementById(`id_${field}`).style.borderColor = '#e74c3c';
+    }
+
+    // Function to clear errors
+    function clearErrors() {
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.textContent = '';
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.style.borderColor = '';
+        });
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            updateSubmitButton();
-        });
-
-        field.addEventListener('focus', function() {
-            this.style.borderColor = '#667eea';
-        });
-    }
-
-    // Validation functions
-    const validations = {
-        firstName: (value) => value.length >= 2,
-        lastName: (value) => value.length >= 2,
-        email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-        password: (value) => checkPasswordStrength(value),
-        confirmPassword: (value) => value === passwordField.value && value.length > 0
-    };
-
-    // Setup field validations
-    Object.keys(validations).forEach(fieldName => {
-        const field = document.getElementById(fieldName);
-        const errorElement = document.getElementById(fieldName + 'Error');
-        validateField(field, errorElement, validations[fieldName]);
-    });
-
-    // Password strength real-time checking
-    passwordField.addEventListener('input', function() {
-        checkPasswordStrength(this.value);
-        // Also revalidate confirm password
-        if (confirmPasswordField.value) {
-            const isValid = confirmPasswordField.value === this.value;
-            const confirmError = document.getElementById('confirmPasswordError');
-            if (isValid) {
-                confirmPasswordField.style.borderColor = 'rgba(46, 204, 113, 0.5)';
-                confirmError.style.display = 'none';
-            } else {
-                confirmPasswordField.style.borderColor = '#e74c3c';
-                confirmError.style.display = 'block';
-            }
         }
-        updateSubmitButton();
-    });
-
-    // Terms checkbox validation
-    termsCheckbox.addEventListener('change', updateSubmitButton);
-
-    // Update submit button state
-    function updateSubmitButton() {
-        const fields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
-        const allValid = fields.every(fieldName => {
-            const field = document.getElementById(fieldName);
-            return field.value && validations[fieldName](field.value);
-        });
-
-        const termsAccepted = termsCheckbox.checked;
-        submitBtn.disabled = !(allValid && termsAccepted);
+        return cookieValue;
     }
 
-    // Form submission
-    form.addEventListener('submit', function(e) {
+    // Form submission with AJAX
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Hide previous messages
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
+        // Clear previous errors
+        clearErrors();
         
         // Show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+        
         submitBtn.disabled = true;
         btnText.style.display = 'none';
         btnLoading.style.display = 'inline-block';
         
-        // Simulate API call
-        setTimeout(() => {
+        try {
             // Get form data
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
+            const formData = new FormData(this);
+            const csrftoken = getCookie('csrftoken');
             
-            // Simulate registration process
-            if (Math.random() > 0.1) { // 90% success rate for demo
-                successMessage.style.display = 'block';
+            // Send data with AJAX
+            const response = await fetch('{% url "register" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrftoken
+                },
+                credentials: 'include'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Registration successful
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('registerForm').reset();
+                
+                // Redirect after 2 seconds
                 setTimeout(() => {
-                    // Redirect to login or dashboard
-                    window.location.href = '/login?registered=true';
+                    window.location.href = data.redirect_url || '{% url "profile" %}';
                 }, 2000);
             } else {
-                // Simulate error (e.g., email already exists)
-                document.getElementById('errorText').textContent = 'Email address is already registered. Please try with a different email.';
-                errorMessage.style.display = 'block';
-                
-                // Reset button state
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-                updateSubmitButton();
+                // Show errors
+                if (data.errors) {
+                    for (const [field, messages] of Object.entries(data.errors)) {
+                        showError(field, messages[0]);
+                    }
+                } else {
+                    document.getElementById('errorText').textContent = data.message || 'An error occurred during registration.';
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
             }
-        }, 2500);
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('errorText').textContent = 'Network error. Please try again.';
+            document.getElementById('errorMessage').style.display = 'block';
+        } finally {
+            // Restore button state
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        }
     });
-
-    // Social login buttons
-    document.querySelectorAll('.social-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const provider = this.textContent.trim();
-            alert(`${provider} registration functionality would be implemented here`);
-        });
-    });
-
-    // Initial button state check
-    updateSubmitButton();
 </script>
 {% endblock %}

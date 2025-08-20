@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Thunder Road - The Wild Storms - LyricString{% endblock %}
+{% block title %}{{ song.title }} - {{ song.artist.name }} - LyricString{% endblock %}
 
 {% block extra_css %}
 
@@ -13,36 +13,44 @@
 <link rel="stylesheet" href="{% static 'css/song_detail.css' %}">
 <div class="song-hero">
     <div class="song-artwork">
+        {% if song.cover_image %}
+        <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+        {% else %}
         <i class="fas fa-guitar"></i>
+        {% endif %}
         <button class="play-button">
             <i class="fas fa-play"></i>
         </button>
     </div>
     
     <div class="song-meta">
-        <h1>Thunder Road</h1>
-        <div class="artist">The Wild Storms</div>
+        <h1>{{ song.title }}</h1>
+        <div class="artist">{{ song.artist.name }}</div>
         
         <div class="song-info-grid">
             <div class="info-item">
                 <div class="info-label">Duration</div>
-                <div class="info-value">4:12</div>
+                <div class="info-value">{{ song.duration|time:"i:s" }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Key</div>
-                <div class="info-value">E Major</div>
+                <div class="info-value">{{ song.key }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">BPM</div>
-                <div class="info-value">120</div>
+                <div class="info-value">{{ song.bpm }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Year</div>
-                <div class="info-value">2023</div>
+                <div class="info-value">{{ song.year }}</div>
             </div>
         </div>
         
-        <div class="genre-tag">Rock</div>
+        <div class="genre-tag">
+            {% for genre in song.genres.all %}
+            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </div>
         
         <div class="action-buttons">
             <button class="action-btn primary">
@@ -66,10 +74,7 @@
         <i class="fas fa-music"></i> Song Information
     </h2>
     <p style="color: #b0b0b0; line-height: 1.6; font-size: 1.1rem;">
-        "Thunder Road" is an electrifying rock anthem that showcases The Wild Storms' signature sound. 
-        With powerful guitar riffs and driving percussion, this song takes listeners on a journey through 
-        stormy emotions and triumphant resilience. Perfect for intermediate guitarists looking to master 
-        classic rock techniques.
+        {{ song.description }}
     </p>
 </div>
 
@@ -78,34 +83,17 @@
         <i class="fas fa-guitar"></i> Instruments & Difficulty
     </h2>
     <div class="instruments-grid">
+        {% for song_instrument in song.songinstrument_set.all %}
         <div class="instrument-card">
             <div class="instrument-icon">
-                <i class="fas fa-guitar"></i>
+                <i class="{{ song_instrument.instrument.icon_class }}"></i>
             </div>
-            <div class="instrument-name">Electric Guitar</div>
-            <span class="difficulty-badge difficulty-medium">Medium</span>
+            <div class="instrument-name">{{ song_instrument.instrument.name }}</div>
+            <span class="difficulty-badge difficulty-{{ song_instrument.difficulty }}">
+                {{ song_instrument.difficulty|title }}
+            </span>
         </div>
-        <div class="instrument-card">
-            <div class="instrument-icon">
-                <i class="fas fa-guitar"></i>
-            </div>
-            <div class="instrument-name">Bass Guitar</div>
-            <span class="difficulty-badge difficulty-easy">Easy</span>
-        </div>
-        <div class="instrument-card">
-            <div class="instrument-icon">
-                <i class="fas fa-drum"></i>
-            </div>
-            <div class="instrument-name">Drums</div>
-            <span class="difficulty-badge difficulty-medium">Medium</span>
-        </div>
-        <div class="instrument-card">
-            <div class="instrument-icon">
-                <i class="fas fa-microphone"></i>
-            </div>
-            <div class="instrument-name">Vocals</div>
-            <span class="difficulty-badge difficulty-hard">Hard</span>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -114,30 +102,12 @@
         <i class="fas fa-music"></i> Chord Progression
     </h2>
     <div class="chord-progression">
+        {% for chord in chords %}
         <div class="chord-item">
-            <div class="chord-name">E</div>
-            <div class="chord-type">Major</div>
+            <div class="chord-name">{{ chord.chord_name }}</div>
+            <div class="chord-type">{{ chord.chord_type }}</div>
         </div>
-        <div class="chord-item">
-            <div class="chord-name">A</div>
-            <div class="chord-type">Major</div>
-        </div>
-        <div class="chord-item">
-            <div class="chord-name">B</div>
-            <div class="chord-type">Major</div>
-        </div>
-        <div class="chord-item">
-            <div class="chord-name">C#m</div>
-            <div class="chord-type">Minor</div>
-        </div>
-        <div class="chord-item">
-            <div class="chord-name">F#m</div>
-            <div class="chord-type">Minor</div>
-        </div>
-        <div class="chord-item">
-            <div class="chord-name">A</div>
-            <div class="chord-type">Major</div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -149,140 +119,44 @@
     <div class="tabs-container">
         <div class="tab-buttons">
             <button class="tab-btn active" data-tab="lyrics">Lyrics</button>
+            {% if 'Electric Guitar' in tabs_by_instrument %}
             <button class="tab-btn" data-tab="guitar-tabs">Guitar Tabs</button>
+            {% endif %}
+            {% if 'Bass Guitar' in tabs_by_instrument %}
             <button class="tab-btn" data-tab="bass-tabs">Bass Tabs</button>
+            {% endif %}
         </div>
         
         <div class="tab-content active" id="lyrics">
             <div class="lyrics-container">
-Lightning strikes across the sky tonight
-Thunder rolls like drums in my mind
-Walking down this endless thunder road
-Where the storm and I are intertwined
-
-[Chorus]
-Thunder road, take me home
-Through the lightning and the rain
-Thunder road, I'm not alone
-When the storm calls out my name
-
-Verse 2:
-Electric air fills up my lungs with fire
-Every step echoes like a roar
-On this path where wild hearts never tire
-I found what I was searching for
-
-[Chorus]
-Thunder road, take me home
-Through the lightning and the rain
-Thunder road, I'm not alone
-When the storm calls out my name
-
-[Bridge]
-In the eye of the hurricane
-I found my peace, I found my way
-No more running from the pain
-Thunder road will light the way
-
-[Final Chorus]
-Thunder road, take me home
-Through the lightning and the rain
-Thunder road, I'm not alone
-When the storm calls out my name
-Thunder road, thunder road
-When the storm calls out my name
+                {% for section_type, sections in lyrics_by_section.items %}
+                {% for section in sections %}
+                {% if section.section_type != 'verse' or forloop.first %}
+                <strong>[{{ section.section_type|title }}]</strong><br>
+                {% endif %}
+                {{ section.content|linebreaksbr }}<br><br>
+                {% endfor %}
+                {% endfor %}
             </div>
         </div>
         
+        {% if 'Electric Guitar' in tabs_by_instrument %}
         <div class="tab-content" id="guitar-tabs">
             <div class="lyrics-container">
-[Intro]
-E|--0--0--0--0--|
-B|--0--2--4--5--|
-G|--1--2--4--6--|
-D|--2--2--4--6--|
-A|--2--0--2--4--|
-E|--0-----------|
-
-[Verse] - E A B C#m
-E|--0--0--2--4--|
-B|--0--2--4--5--|
-G|--1--2--4--6--|
-D|--2--2--4--6--|
-A|--2--0--2--4--|
-E|--0-----------|
-
-[Chorus] - F#m A E B
-E|--2--0--0--2--|
-B|--2--2--0--4--|
-G|--2--2--1--4--|
-D|--4--2--2--4--|
-A|--4--0--2--2--|
-E|--2-----0-----|
+                {{ tabs_by_instrument.Electric Guitar|linebreaksbr }}
             </div>
         </div>
+        {% endif %}
         
+        {% if 'Bass Guitar' in tabs_by_instrument %}
         <div class="tab-content" id="bass-tabs">
             <div class="lyrics-container">
-[Intro]
-G|-----------------|
-D|-----------------|
-A|--7--7--9--11----|
-E|-----------------|
-
-[Verse]
-G|-----------------|
-D|-----------------|
-A|--7--7--9--11----|
-E|-----------------|
-
-[Chorus]
-G|-----------------|
-D|--4--4--2--4-----|
-A|-----------------|
-E|-----------------|
+                {{ tabs_by_instrument.Bass Guitar|linebreaksbr }}
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 
-<script>
-    // Tab functionality
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Remove active class from all tabs and buttons
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding content
-            this.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-
-    // Play button functionality
-    document.querySelector('.play-button').addEventListener('click', function() {
-        alert('Playing: Thunder Road - The Wild Storms');
-    });
-
-    // Action buttons functionality
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            const text = this.textContent.trim();
-            
-            if (icon.classList.contains('fa-heart')) {
-                icon.classList.toggle('fas');
-                icon.classList.toggle('far');
-                this.style.color = icon.classList.contains('fas') ? '#e74c3c' : '';
-            } else if (icon.classList.contains('fa-bookmark')) {
-                icon.classList.toggle('fas');
-                icon.classList.toggle('far');
-                this.style.color = icon.classList.contains('fas') ? '#f39c12' : '';
-            }
-        });
-    });
-</script>
+<!-- Rest of your JavaScript remains the same -->
 {% endblock %}

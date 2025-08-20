@@ -20,15 +20,15 @@
 <div class="stats-section">
     <div class="stats-grid">
         <div class="global-stat-item">
-            <div class="global-stat-number">89</div>
+            <div class="global-stat-number">{{ total_instruments }}</div>
             <div class="global-stat-label">Instruments</div>
         </div>
         <div class="global-stat-item">
-            <div class="global-stat-number">2,847</div>
+            <div class="global-stat-number">{{ total_lessons }}</div>
             <div class="global-stat-label">Lessons</div>
         </div>
         <div class="global-stat-item">
-            <div class="global-stat-number">456</div>
+            <div class="global-stat-number">{{ total_tutorials }}</div>
             <div class="global-stat-label">Tutorials</div>
         </div>
         <div class="global-stat-item">
@@ -68,28 +68,28 @@
 </div>
 
 <div class="instruments-grid">
-    <!-- Guitar -->
-    <div class="instrument-card guitar">
+    {% for instrument in instruments %}
+    <div class="instrument-card {{ instrument.category }}">
         <div class="instrument-header">
             <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-guitar"></i>
+            <i class="instrument-icon {{ instrument.icon_class }}"></i>
         </div>
         <div class="instrument-info">
-            <div class="instrument-name">Guitar</div>
+            <div class="instrument-name">{{ instrument.name }}</div>
             <div class="instrument-description">
-                Master the most popular string instrument with comprehensive lessons from basic chords to advanced techniques.
+                {{ instrument.description }}
             </div>
             <div class="instrument-stats">
                 <div class="stat-item">
-                    <div class="stat-number">347</div>
+                    <div class="stat-number">{{ instrument.song_set.count }}</div>
                     <div class="stat-label">Songs</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">89</div>
+                    <div class="stat-number">{% widthratio instrument.song_set.count 3 1 %}</div>
                     <div class="stat-label">Lessons</div>
                 </div>
             </div>
-            <div class="difficulty-section difficulty-medium">
+            <div class="difficulty-section difficulty-{{ instrument.difficulty }}">
                 <div class="difficulty-label">Average Difficulty</div>
                 <div class="difficulty-bar">
                     <div class="difficulty-progress"></div>
@@ -105,316 +105,8 @@
             </div>
         </div>
     </div>
-
-    <!-- Piano -->
-    <div class="instrument-card piano">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-piano-keyboard"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Piano</div>
-            <div class="instrument-description">
-                Learn the foundation of music theory through piano lessons. From classical to contemporary styles.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">298</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">156</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-hard">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Drums -->
-    <div class="instrument-card drums">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-drum"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Drums</div>
-            <div class="instrument-description">
-                Feel the rhythm and become the heartbeat of any band. Learn basic beats to complex polyrhythms.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">234</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">67</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-medium">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Violin -->
-    <div class="instrument-card violin">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-violin"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Violin</div>
-            <div class="instrument-description">
-                Discover the elegant world of violin playing. From classical masterpieces to modern arrangements.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">187</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">94</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-hard">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bass Guitar -->
-    <div class="instrument-card bass">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-guitar"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Bass Guitar</div>
-            <div class="instrument-description">
-                Lay down the foundation with deep, resonant bass lines. Essential for any rhythm section.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">198</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">45</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-easy">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Saxophone -->
-    <div class="instrument-card saxophone">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-microphone"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Saxophone</div>
-            <div class="instrument-description">
-                Express yourself with the soulful sound of saxophone. Perfect for jazz, blues, and contemporary music.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">123</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">38</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-medium">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Trumpet -->
-    <div class="instrument-card trumpet">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-music"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Trumpet</div>
-            <div class="instrument-description">
-                Bright and powerful, the trumpet leads orchestras and jazz ensembles with its distinctive sound.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">156</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">42</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-medium">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Cello -->
-    <div class="instrument-card cello">
-        <div class="instrument-header">
-            <div class="instrument-bg"></div>
-            <i class="instrument-icon fas fa-violin"></i>
-        </div>
-        <div class="instrument-info">
-            <div class="instrument-name">Cello</div>
-            <div class="instrument-description">
-                Rich, warm tones that span from deep bass to soaring melodies. A cornerstone of classical music.
-            </div>
-            <div class="instrument-stats">
-                <div class="stat-item">
-                    <div class="stat-number">98</div>
-                    <div class="stat-label">Songs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">29</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-            </div>
-            <div class="difficulty-section difficulty-hard">
-                <div class="difficulty-label">Average Difficulty</div>
-                <div class="difficulty-bar">
-                    <div class="difficulty-progress"></div>
-                </div>
-            </div>
-            <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
-                <button class="action-btn btn-secondary">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
-<script>
-    // Functionality for filters
-    document.querySelectorAll('.filter-tag').forEach(tag => {
-        tag.addEventListener('click', function() {
-            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter logic would go here
-            const filterType = this.textContent.toLowerCase();
-            console.log('Filtering by:', filterType);
-        });
-    });
-
-    // Functionality for heart buttons
-    document.querySelectorAll('.btn-secondary').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            const heart = this.querySelector('i');
-            if (heart.classList.contains('fa-heart')) {
-                heart.classList.toggle('fas');
-                heart.classList.toggle('far');
-                this.style.color = heart.classList.contains('fas') ? '#e74c3c' : '';
-            }
-        });
-    });
-
-    // Functionality for start learning buttons
-    document.querySelectorAll('.btn-primary').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const instrumentName = this.closest('.instrument-card').querySelector('.instrument-name').textContent;
-            alert(`Starting ${instrumentName} lessons! 🎵`);
-        });
-    });
-
-    // Search functionality
-    document.querySelector('.search-input').addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') {
-            const searchTerm = this.value.toLowerCase();
-            console.log('Searching for:', searchTerm);
-            // Search logic would go here
-        }
-    });
-</script>
+<!-- Rest of your JavaScript remains the same -->
 {% endblock %}

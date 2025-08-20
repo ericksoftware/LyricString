@@ -16,6 +16,8 @@
 
 <div class="edit-container">
     <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
         <!-- Profile Picture Section -->
         <div class="form-section">
             <h2 class="section-title">
@@ -23,23 +25,30 @@
             </h2>
             
             <div class="avatar-section">
-                <div class="current-avatar">
-                    <i class="fas fa-user"></i>
+                <div class="current-avatar" id="avatarPreview">
+                    {% if user_form.instance.profile_picture %}
+                    <img src="{{ user_form.instance.profile_picture.url }}" alt="Current profile picture" id="currentAvatar">
+                    {% else %}
+                    <i class="fas fa-user" id="defaultAvatarIcon"></i>
+                    {% endif %}
                     <div class="avatar-overlay">
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
                 
                 <div class="file-input-wrapper">
-                    <input type="file" id="avatar" name="avatar" class="file-input" accept="image/*">
-                    <label for="avatar" class="file-input-label">
+                    {{ user_form.profile_picture }}
+                    <label for="id_profile_picture" class="file-input-label">
                         <i class="fas fa-upload"></i> Change Picture
                     </label>
                 </div>
-                <div class="form-group">
-                <label for="bio" class="form-label">Bio</label>
-                <textarea id="bio" name="bio" class="form-input form-textarea" placeholder="Tell us about yourself and your musical journey...">Music enthusiast and aspiring guitarist. Love exploring different genres and sharing my musical journey with the community.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_bio" class="form-label">Bio</label>
+                {{ user_form.bio }}
                 <div class="form-help">Maximum 500 characters</div>
+                <div class="char-counter" id="bioCharCounter">0/500</div>
             </div>
         </div>
 
@@ -51,91 +60,25 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="favorite_genre" class="form-label">Favorite Genre</label>
-                    <select id="favorite_genre" name="favorite_genre" class="form-select">
-                        <option value="">Select your favorite genre</option>
-                        <option value="rock" selected>Rock</option>
-                        <option value="pop">Pop</option>
-                        <option value="jazz">Jazz</option>
-                        <option value="classical">Classical</option>
-                        <option value="electronic">Electronic</option>
-                        <option value="folk">Folk</option>
-                        <option value="reggae">Reggae</option>
-                        <option value="blues">Blues</option>
-                        <option value="country">Country</option>
-                        <option value="hip-hop">Hip-Hop</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="skill_level" class="form-label">Skill Level</label>
-                    <select id="skill_level" name="skill_level" class="form-select">
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate" selected>Intermediate</option>
-                        <option value="advanced">Advanced</option>
-                        <option value="professional">Professional</option>
-                    </select>
+                    <label for="id_skill_level" class="form-label">Skill Level</label>
+                    {{ user_form.skill_level }}
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Instruments You Play</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="guitar" name="instruments" value="guitar" checked>
-                        <label for="guitar">Guitar</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="piano" name="instruments" value="piano">
-                        <label for="piano">Piano</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="drums" name="instruments" value="drums" checked>
-                        <label for="drums">Drums</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="bass" name="instruments" value="bass">
-                        <label for="bass">Bass</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="violin" name="instruments" value="violin">
-                        <label for="violin">Violin</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="vocals" name="instruments" value="vocals">
-                        <label for="vocals">Vocals</label>
-                    </div>
+                <div class="checkbox-group" id="instrumentsGroup">
+                    {{ pref_form.instruments_played }}
                 </div>
+                <button type="button" class="btn-add-more" id="addInstrumentBtn">+ Add Instrument</button>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Music Genres You Enjoy</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_rock" name="genres" value="rock" checked>
-                        <label for="genre_rock">Rock</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_pop" name="genres" value="pop" checked>
-                        <label for="genre_pop">Pop</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_jazz" name="genres" value="jazz">
-                        <label for="genre_jazz">Jazz</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_classical" name="genres" value="classical">
-                        <label for="genre_classical">Classical</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_electronic" name="genres" value="electronic" checked>
-                        <label for="genre_electronic">Electronic</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="genre_folk" name="genres" value="folk">
-                        <label for="genre_folk">Folk</label>
-                    </div>
+                <div class="checkbox-group" id="genresGroup">
+                    {{ pref_form.favorite_genres }}
                 </div>
+                <button type="button" class="btn-add-more" id="addGenreBtn">+ Add Genre</button>
             </div>
         </div>
 
@@ -147,39 +90,35 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="country" class="form-label">Country</label>
-                    <select id="country" name="country" class="form-select">
-                        <option value="">Select your country</option>
-                        <option value="us">United States</option>
-                        <option value="ca">Canada</option>
-                        <option value="uk">United Kingdom</option>
-                        <option value="au">Australia</option>
-                        <option value="de">Germany</option>
-                        <option value="fr">France</option>
-                        <option value="es">Spain</option>
-                        <option value="it">Italy</option>
-                        <option value="mx" selected>Mexico</option>
-                        <option value="br">Brazil</option>
-                        <option value="ar">Argentina</option>
-                        <option value="other">Other</option>
-                    </select>
+                    <label for="id_location" class="form-label">Location</label>
+                    {{ user_form.location }}
+                    <div class="location-suggestions" id="locationSuggestions"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" id="city" name="city" class="form-input" value="Tijuana" placeholder="Enter your city">
+                    <label for="id_website" class="form-label">Website/Portfolio</label>
+                    {{ user_form.website }}
+                    <div class="website-preview" id="websitePreview"></div>
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="website" class="form-label">Website/Portfolio</label>
-                    <input type="url" id="website" name="website" class="form-input" placeholder="https://yourwebsite.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="social_media" class="form-label">Social Media</label>
-                    <input type="text" id="social_media" name="social_media" class="form-input" placeholder="@yourusername">
+                    <label for="id_social_media" class="form-label">Social Media</label>
+                    <div class="social-media-inputs">
+                        {% for field in user_form.social_media_fields %}
+                            <div class="social-input-group">
+                                <select class="social-platform">
+                                    <option value="twitter">Twitter</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                                <input type="text" class="social-username" placeholder="Username" value="{{ field.value }}">
+                            </div>
+                        {% endfor %}
+                        <button type="button" class="btn-add-social" id="addSocialBtn">+ Add Social Media</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,7 +137,7 @@
                 <div class="switch-group">
                     <span class="switch-label">Make profile public</span>
                     <label class="switch">
-                        <input type="checkbox" name="public_profile" checked>
+                        {{ pref_form.public_profile }}
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -206,7 +145,7 @@
                 <div class="switch-group">
                     <span class="switch-label">Show liked songs</span>
                     <label class="switch">
-                        <input type="checkbox" name="show_liked_songs" checked>
+                        {{ pref_form.show_liked_songs }}
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -214,15 +153,7 @@
                 <div class="switch-group">
                     <span class="switch-label">Show activity feed</span>
                     <label class="switch">
-                        <input type="checkbox" name="show_activity">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="switch-group">
-                    <span class="switch-label">Allow others to find me by email</span>
-                    <label class="switch">
-                        <input type="checkbox" name="findable_by_email">
+                        {{ pref_form.show_activity }}
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -236,168 +167,179 @@
             </h2>
             
             <div class="switch-group">
-                <span class="switch-label">Email notifications for new followers</span>
+                <span class="switch-label">Email notifications</span>
                 <label class="switch">
-                    <input type="checkbox" name="notify_followers" checked>
+                    {{ pref_form.email_notifications }}
                     <span class="slider"></span>
                 </label>
-            </div>
-            
-            <div class="switch-group">
-                <span class="switch-label">Email notifications for song recommendations</span>
-                <label class="switch">
-                    <input type="checkbox" name="notify_recommendations" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="switch-group">
-                <span class="switch-label">Weekly music digest</span>
-                <label class="switch">
-                    <input type="checkbox" name="weekly_digest" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="switch-group">
-                <span class="switch-label">Push notifications on mobile</span>
-                <label class="switch">
-                    <input type="checkbox" name="push_notifications">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Account Settings -->
-        <div class="form-section">
-            <h2 class="section-title">
-                <i class="fas fa-cog"></i> Account Settings
-            </h2>
-            
-            <div class="form-group">
-                <label for="current_password" class="form-label">Current Password</label>
-                <input type="password" id="current_password" name="current_password" class="form-input" placeholder="Enter current password to save changes">
-                <div class="form-help">Required to save profile changes</div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="new_password" class="form-label">New Password (Optional)</label>
-                    <input type="password" id="new_password" name="new_password" class="form-input" placeholder="Leave blank to keep current password">
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirm_password" class="form-label">Confirm New Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="Confirm new password">
-                </div>
             </div>
         </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" id="saveChangesBtn">
                 <i class="fas fa-save"></i> Save Changes
             </button>
-            <a href="/profile/" class="btn btn-outline">
+            <a href="{% url 'profile' %}" class="btn btn-outline">
                 <i class="fas fa-times"></i> Cancel
             </a>
-            <button type="button" class="btn btn-danger" onclick="confirmDelete()">
-                <i class="fas fa-trash"></i> Delete Account
-            </button>
         </div>
     </form>
 </div>
 
 <script>
-    // File input preview
-    document.getElementById('avatar').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const avatar = document.querySelector('.current-avatar');
-                avatar.style.backgroundImage = `url(${e.target.result})`;
-                avatar.style.backgroundSize = 'cover';
-                avatar.style.backgroundPosition = 'center';
-                avatar.innerHTML = '';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Password confirmation validation
-    document.getElementById('confirm_password').addEventListener('input', function() {
-        const newPassword = document.getElementById('new_password').value;
-        const confirmPassword = this.value;
-        
-        if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-            this.style.borderColor = '#e74c3c';
-        } else {
-            this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-        }
-    });
-
-    // Character counter for bio
-    document.getElementById('bio').addEventListener('input', function() {
-        const maxLength = 500;
-        const currentLength = this.value.length;
-        const helpText = this.nextElementSibling;
-        
-        if (currentLength > maxLength) {
-            this.style.borderColor = '#e74c3c';
-            helpText.style.color = '#e74c3c';
-            helpText.textContent = `${currentLength}/${maxLength} characters (${currentLength - maxLength} over limit)`;
-        } else {
-            this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            helpText.style.color = '#888';
-            helpText.textContent = `${currentLength}/${maxLength} characters`;
-        }
-    });
-
-    // Delete account confirmation
-    function confirmDelete() {
-        if (confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.')) {
-            if (confirm('This is your final warning. Are you absolutely sure you want to delete your account?')) {
-                // Here you would redirect to delete account endpoint
-                alert('Account deletion functionality would be implemented here.');
+document.addEventListener('DOMContentLoaded', function() {
+    // Dynamic avatar preview
+    const avatarInput = document.querySelector('#id_profile_picture');
+    const avatarPreview = document.querySelector('#avatarPreview');
+    const currentAvatar = document.querySelector('#currentAvatar');
+    const defaultAvatarIcon = document.querySelector('#defaultAvatarIcon');
+    
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (currentAvatar) {
+                        currentAvatar.src = e.target.result;
+                    } else {
+                        if (defaultAvatarIcon) defaultAvatarIcon.style.display = 'none';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Profile preview';
+                        img.id = 'currentAvatar';
+                        avatarPreview.insertBefore(img, avatarPreview.firstChild);
+                    }
+                };
+                reader.readAsDataURL(file);
             }
-        }
+        });
     }
 
-    // Form validation before submit
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const currentPassword = document.getElementById('current_password').value;
-        const newPassword = document.getElementById('new_password').value;
-        const confirmPassword = document.getElementById('confirm_password').value;
+    // Bio character counter
+    const bioTextarea = document.querySelector('#id_bio');
+    const charCounter = document.querySelector('#bioCharCounter');
+    
+    if (bioTextarea && charCounter) {
+        bioTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            charCounter.textContent = `${currentLength}/500`;
+            if (currentLength > 500) {
+                charCounter.style.color = 'red';
+            } else {
+                charCounter.style.color = '';
+            }
+        });
         
-        if (!currentPassword) {
-            e.preventDefault();
-            alert('Please enter your current password to save changes.');
-            return;
-        }
-        
-        if (newPassword && newPassword !== confirmPassword) {
-            e.preventDefault();
-            alert('New passwords do not match.');
-            return;
-        }
-        
-        if (newPassword && newPassword.length < 8) {
-            e.preventDefault();
-            alert('New password must be at least 8 characters long.');
-            return;
-        }
+        // Initialize counter
+        charCounter.textContent = `${bioTextarea.value.length}/500`;
+    }
+
+    // Add more instruments/genres dynamically
+    const addInstrumentBtn = document.querySelector('#addInstrumentBtn');
+    const addGenreBtn = document.querySelector('#addGenreBtn');
+    
+    if (addInstrumentBtn) {
+        addInstrumentBtn.addEventListener('click', function() {
+            // Implementation for adding new instrument input
+            console.log('Add instrument functionality to be implemented');
+        });
+    }
+    
+    if (addGenreBtn) {
+        addGenreBtn.addEventListener('click', function() {
+            // Implementation for adding new genre input
+            console.log('Add genre functionality to be implemented');
+        });
+    }
+
+    // Add social media field dynamically
+    const addSocialBtn = document.querySelector('#addSocialBtn');
+    if (addSocialBtn) {
+        addSocialBtn.addEventListener('click', function() {
+            const socialInputs = document.querySelector('.social-media-inputs');
+            const newSocialGroup = document.createElement('div');
+            newSocialGroup.className = 'social-input-group';
+            newSocialGroup.innerHTML = `
+                <select class="social-platform">
+                    <option value="twitter">Twitter</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="youtube">YouTube</option>
+                </select>
+                <input type="text" class="social-username" placeholder="Username">
+                <button type="button" class="btn-remove-social">&times;</button>
+            `;
+            socialInputs.insertBefore(newSocialGroup, addSocialBtn);
+            
+            // Add remove functionality
+            newSocialGroup.querySelector('.btn-remove-social').addEventListener('click', function() {
+                socialInputs.removeChild(newSocialGroup);
+            });
+        });
+    }
+
+    // Initialize existing remove buttons for social media
+    document.querySelectorAll('.btn-remove-social').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.parentElement.remove();
+        });
     });
 
-    // Smooth animations for form interactions
-    document.querySelectorAll('.form-input, .form-select').forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.style.transform = 'translateY(-2px)';
+    // Location suggestions
+    const locationInput = document.querySelector('#id_location');
+    const locationSuggestions = document.querySelector('#locationSuggestions');
+    
+    if (locationInput && locationSuggestions) {
+        locationInput.addEventListener('input', function() {
+            if (this.value.length > 2) {
+                // Here you would typically fetch suggestions from an API
+                // For demo purposes, we'll just show some mock suggestions
+                locationSuggestions.innerHTML = `
+                    <div class="suggestion">${this.value}, City</div>
+                    <div class="suggestion">${this.value}, State</div>
+                    <div class="suggestion">${this.value} County</div>
+                `;
+                locationSuggestions.style.display = 'block';
+            } else {
+                locationSuggestions.style.display = 'none';
+            }
         });
         
-        input.addEventListener('blur', function() {
-            this.parentElement.style.transform = 'translateY(0)';
+        // Hide suggestions when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (e.target !== locationInput) {
+                locationSuggestions.style.display = 'none';
+            }
         });
-    });
+        
+        // Select suggestion
+        locationSuggestions.addEventListener('click', function(e) {
+            if (e.target.classList.contains('suggestion')) {
+                locationInput.value = e.target.textContent;
+                locationSuggestions.style.display = 'none';
+            }
+        });
+    }
+
+    // Website preview
+    const websiteInput = document.querySelector('#id_website');
+    const websitePreview = document.querySelector('#websitePreview');
+    
+    if (websiteInput && websitePreview) {
+        websiteInput.addEventListener('input', function() {
+            if (this.value) {
+                let url = this.value;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                websitePreview.innerHTML = `<a href="${url}" target="_blank">Preview: ${url}</a>`;
+            } else {
+                websitePreview.innerHTML = '';
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
