@@ -50,7 +50,9 @@ project/
     │   ├── login.html
     │   ├── register.html
     │   ├── profile.html
-    │   └── profile_edit.html
+    │   ├── profile_edit.html
+    │   ├── admin_add_song.html
+    │   └── admin_dashboard.html
     │
     └── interactions/             # Interactions partial templates
         ├── like_button.html
