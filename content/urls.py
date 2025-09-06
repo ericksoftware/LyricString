@@ -6,4 +6,7 @@ urlpatterns = [
     path('', views.song_list_view, name='song_list'),
     path('song/<int:song_id>/', views.song_detail_view, name='song_detail'),
     path('instruments/', views.instrument_list_view, name='instrument_list'),
+    path('instruments/<int:instrument_id>/', views.instrument_songs_view, name='instrument_songs'),
+    path('genres/', views.genre_list_view, name='genre_list'),
+    path('genres/<int:genre_id>/', views.genre_songs_view, name='genre_songs'),
 ]

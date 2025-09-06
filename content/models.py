@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -70,6 +71,9 @@ class SongInstrument(models.Model):
     
     class Meta:
         unique_together = ('song', 'instrument')
+    
+    def __str__(self):
+        return f"{self.song.title} - {self.instrument.name} ({self.difficulty})"
 
 class ChordProgression(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='chords')
@@ -79,23 +83,34 @@ class ChordProgression(models.Model):
     
     class Meta:
         ordering = ['order']
+    
+    def __str__(self):
+        return f"{self.chord_name} ({self.chord_type}) - Order: {self.order}"
 
 class LyricsSection(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='lyrics')
-    section_type = models.CharField(max_length=20, choices=[
+    SECTION_TYPES = [
         ('verse', 'Verse'),
         ('chorus', 'Chorus'),
         ('bridge', 'Bridge'),
         ('intro', 'Intro'),
         ('outro', 'Outro')
-    ])
+    ]
+    
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='lyrics')
+    section_type = models.CharField(max_length=20, choices=SECTION_TYPES)
     content = models.TextField()
     order = models.PositiveIntegerField()
     
     class Meta:
         ordering = ['order']
+    
+    def __str__(self):
+        return f"{self.song.title} - {self.section_type} ({self.order})"
 
 class Tab(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='tabs')
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
     content = models.TextField()
+    
+    def __str__(self):
+        return f"{self.song.title} - {self.instrument.name} Tabs"

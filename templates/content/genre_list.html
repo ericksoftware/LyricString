@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Genres - LyricString{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/genre_list.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1><i class="fas fa-list"></i> Genres</h1>
+    <p>Explore music by genre and discover new sounds</p>
+</div>
+
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="global-stat-item">
+            <div class="global-stat-number">{{ total_genres }}</div>
+            <div class="global-stat-label">Genres</div>
+        </div>
+        <div class="global-stat-item">
+            <div class="global-stat-number">{{ total_songs }}</div>
+            <div class="global-stat-label">Songs</div>
+        </div>
+        <div class="global-stat-item">
+            <div class="global-stat-number">{{ total_artists }}</div>
+            <div class="global-stat-label">Artists</div>
+        </div>
+        <div class="global-stat-item">
+            <div class="global-stat-number">{{ total_albums }}</div>
+            <div class="global-stat-label">Albums</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search genres, moods, or decades...">
+        <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
+    
+    <div class="filter-tags">
+        <span class="filter-tag active">All</span>
+        <span class="filter-tag">Popular</span>
+        <span class="filter-tag">New Releases</span>
+        <span class="filter-tag">Classic</span>
+        <span class="filter-tag">Upbeat</span>
+        <span class="filter-tag">Relaxing</span>
+        <span class="filter-tag">Energetic</span>
+        <span class="filter-tag">2020s</span>
+        <span class="filter-tag">2010s</span>
+        <span class="filter-tag">2000s</span>
+    </div>
+</div>
+
+<div class="featured-section">
+    <h2 class="section-title">
+        <i class="fas fa-star"></i> Trending Genres
+    </h2>
+    <p style="color: #b0b0b0; margin-bottom: 20px;">
+        Discover the most popular music genres among our community. Find your next favorite style.
+    </p>
+</div>
+
+<div class="genres-grid">
+    {% for genre in genres %}
+    <div class="genre-card {{ genre.slug }}">
+        <div class="genre-header">
+            <div class="genre-bg"></div>
+            <i class="genre-icon {{ genre.icon_class }}"></i>
+        </div>
+        <div class="genre-info">
+            <div class="genre-name">{{ genre.name }}</div>
+            <div class="genre-description">
+                {{ genre.description }}
+            </div>
+            <div class="genre-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ genre.song_set.count }}</div>
+                    <div class="stat-label">Songs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ genre.artist_count }}</div>
+                    <div class="stat-label">Artists</div>
+                </div>
+            </div>
+            <div class="popularity-section popularity-{{ genre.popularity_level }}">
+                <div class="popularity-label">Popularity</div>
+                <div class="popularity-bar">
+                    <div class="popularity-progress"></div>
+                </div>
+            </div>
+            <div class="genre-actions">
+                <a href="{% url 'genre_songs' genre.id %}" class="action-btn btn-primary" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fas fa-play"></i> Explore Songs
+                </a>
+                <button class="action-btn btn-secondary">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Search functionality
+    document.querySelector('.search-input').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            searchGenres();
+        }
+    });
+    
+    document.querySelector('.search-bar button').addEventListener('click', searchGenres);
+    
+    function searchGenres() {
+        const query = document.querySelector('.search-input').value.toLowerCase();
+        const genreCards = document.querySelectorAll('.genre-card');
+        
+        genreCards.forEach(card => {
+            const genreName = card.querySelector('.genre-name').textContent.toLowerCase();
+            const genreDesc = card.querySelector('.genre-description').textContent.toLowerCase();
+            
+            if (genreName.includes(query) || genreDesc.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Filter functionality
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.textContent.toLowerCase();
+            const genreCards = document.querySelectorAll('.genre-card');
+            
+            if (filter === 'all') {
+                genreCards.forEach(card => card.style.display = 'block');
+                return;
+            }
+            
+            // This is a simplified filter for demonstration
+            // In a real application, you would filter based on actual data attributes
+            genreCards.forEach(card => {
+                const random = Math.random();
+                if (random > 0.5) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

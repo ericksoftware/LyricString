@@ -5,7 +5,54 @@
 {% block title %}Songs - LyricString{% endblock %}
 
 {% block extra_css %}
+<style>
+    .song-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
 
+    .song-card-link:hover .song-card {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Estilos para la imagen de la canción */
+    .song-cover {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .song-cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .song-card:hover .song-cover-img {
+        transform: scale(1.05);
+    }
+    
+    .song-cover i {
+        font-size: 3rem;
+        color: rgba(255,255,255,0.8);
+        position: absolute;
+        z-index: 1;
+    }
+    
+    /* Mostrar ícono solo si no hay imagen */
+    .song-cover:has(.song-cover-img) i {
+        display: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -55,42 +102,47 @@
 
 <div class="songs-grid">
     {% for song in songs %}
-    <div class="song-card">
-        <div class="song-cover" style="background: linear-gradient(45deg, #ff4757, #c44569);">
-            <i class="fas fa-music"></i>
-            <div class="play-overlay">
-                <div class="play-btn">
-                    <i class="fas fa-play"></i>
+    <a href="{% url 'song_detail' song.id %}" class="song-card-link">
+        <div class="song-card">
+            <div class="song-cover">
+                {% if song.cover_image %}
+                    <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="song-cover-img">
+                {% endif %}
+                <i class="fas fa-music"></i>
+                <div class="play-overlay">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="song-info">
+                <div class="song-title">{{ song.title }}</div>
+                <div class="song-artist">{{ song.artist.name }}</div>
+                <div class="song-details">
+                    <span><i class="fas fa-clock"></i> {{ song.duration|time:"i:s" }}</span>
+                    <span class="song-genre">
+                        {% for genre in song.genres.all %}
+                        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="song-actions">
+                    <button class="action-btn" title="Like">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="action-btn" title="Save">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="More options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="song-info">
-            <div class="song-title">{{ song.title }}</div>
-            <div class="song-artist">{{ song.artist.name }}</div>
-            <div class="song-details">
-                <span><i class="fas fa-clock"></i> {{ song.duration|time:"i:s" }}</span>
-                <span class="song-genre">
-                    {% for genre in song.genres.all %}
-                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </span>
-            </div>
-            <div class="song-actions">
-                <button class="action-btn" title="Like">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <button class="action-btn" title="Save">
-                    <i class="fas fa-bookmark"></i>
-                </button>
-                <button class="action-btn" title="Share">
-                    <i class="fas fa-share"></i>
-                </button>
-                <button class="action-btn" title="More options">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 

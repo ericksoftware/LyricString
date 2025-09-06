@@ -1,0 +1,696 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Manage Users - Admin - LyricString{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_edit_song.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-users"></i> Manage Users</h1>
+        <p>Edit or delete users in the LyricString database</p>
+        
+        <div style="margin-top: 20px;">
+            <a href="{% url 'add_user' %}" class="modal-btn primary">
+                <i class="fas fa-plus"></i>
+                Add New User
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="userSearch" placeholder="Search users by username or email...">
+        </div>
+    </div>
+
+    <!-- Users List -->
+    <div class="users-list">
+        {% for user in all_users %}
+        <div class="user-item" data-username="{{ user.username|lower }}" data-email="{{ user.email|lower }}">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}">
+                    {% else %}
+                    <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                
+                <div class="user-details">
+                    <h3>{{ user.get_full_name|default:user.username }}</h3>
+                    <p class="username">@{{ user.username }}</p>
+                    <p class="email">{{ user.email }}</p>
+                    <div class="user-meta">
+                        <span class="joined">Joined: {{ user.date_joined|date:"M d, Y" }}</span>
+                        <span class="status {% if user.is_active %}active{% else %}inactive{% endif %}">
+                            {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                        </span>
+                        {% if user.is_staff %}
+                        <span class="staff">Staff</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-actions">
+                <button class="btn-edit" onclick="editUser({{ user.id }})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn-delete" onclick="confirmDelete({{ user.id }}, '{{ user.username|escapejs }}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h3>No users found</h3>
+            <p>Add your first user to get started</p>
+            <a href="{% url 'add_user' %}" class="btn-primary">
+                <i class="fas fa-plus"></i> Add New User
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if all_users.has_other_pages %}
+    <div class="pagination">
+        {% if all_users.has_previous %}
+        <a href="?page={{ all_users.previous_page_number }}" class="page-link">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+
+        {% for num in all_users.paginator.page_range %}
+            {% if all_users.number == num %}
+            <span class="page-link current">{{ num }}</span>
+            {% else %}
+            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if all_users.has_next %}
+        <a href="?page={{ all_users.next_page_number }}" class="page-link">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h3>
+            <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete the user "<span id="deleteUsername"></span>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal('deleteModal')">
+                    Cancel
+                </button>
+                <button class="modal-btn danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('userSearch');
+        const userItems = document.querySelectorAll('.user-item');
+        
+        function filterUsers() {
+            const searchText = searchInput.value.toLowerCase();
+            
+            userItems.forEach(item => {
+                const username = item.getAttribute('data-username');
+                const email = item.getAttribute('data-email');
+                
+                const matchesSearch = username.includes(searchText) || email.includes(searchText);
+                
+                if (matchesSearch) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        searchInput.addEventListener('input', filterUsers);
+    });
+    
+    // Edit user function
+    function editUser(userId) {
+        window.location.href = `{% url 'edit_user' 0 %}`.replace('0', userId);
+    }
+    
+    // Delete confirmation
+    let userToDelete = null;
+    
+    function confirmDelete(userId, username) {
+        userToDelete = userId;
+        document.getElementById('deleteUsername').textContent = username;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (!userToDelete) return;
+        
+        try {
+          const response = await fetch(`{% url 'delete_user_api' 0 %}`.replace('0', userToDelete), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Show success message and reload the page
+                showNotification('User deleted successfully!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showNotification('Error deleting user: ' + data.error, 'error');
+            }
+        } catch (error) {
+            showNotification('Network error. Please try again.', 'error');
+        }
+        
+        closeModal('deleteModal');
+    });
+    
+    // Notification function
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    // Modal functions
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeModal(event.target.id);
+        }
+    }
+</script>
+
+<style>
+    /* Users List Styles */
+    .users-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .user-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        background: rgba(26, 26, 46, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .user-item:hover {
+        background: rgba(26, 26, 46, 1);
+        border-color: rgba(102, 126, 234, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+    
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .user-avatar i {
+        font-size: 1.5rem;
+        color: #b0b0b0;
+    }
+    
+    .user-details h3 {
+        color: white;
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+    }
+    
+    .user-details .username {
+        color: #667eea;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    
+    .user-details .email {
+        color: #b0b0b0;
+        margin-bottom: 8px;
+    }
+    
+    .user-meta {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .user-meta span {
+        font-size: 0.9rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+    }
+    
+    .joined {
+        color: #b0b0b0;
+    }
+    
+    .status.active {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78;
+    }
+    
+    .status.inactive {
+        background: rgba(234, 102, 102, 0.2);
+        color: #ea6666;
+    }
+    
+    .staff {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+    }
+    
+    .user-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-edit, .btn-delete {
+        padding: 8px 15px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-edit {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-edit:hover {
+        background: rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-delete {
+        background: rgba(234, 102, 102, 0.2);
+        color: #ea6666;
+        border: 1px solid rgba(234, 102, 102, 0.3);
+    }
+    
+    .btn-delete:hover {
+        background: rgba(234, 102, 102, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+        .user-item {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .user-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+        
+        .user-meta {
+            flex-wrap: wrap;
+        }
+    }
+
+        /* Search and Filter Styles */
+    .search-section {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #b0b0b0;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .filter-group select {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        min-width: 150px;
+    }
+    
+    /* Songs List Styles */
+    .songs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .song-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        background: rgba(26, 26, 46, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .song-item:hover {
+        background: rgba(26, 26, 46, 1);
+        border-color: rgba(102, 126, 234, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .song-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+    
+    .song-cover {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .song-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .song-cover i {
+        font-size: 1.5rem;
+        color: #b0b0b0;
+    }
+    
+    .song-details h3 {
+        color: white;
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+    }
+    
+    .song-details .artist {
+        color: #667eea;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    
+    .song-meta {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .song-meta span {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+    
+    .genres {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .genre-tag {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+    
+    .song-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-edit, .btn-delete {
+        padding: 8px 15px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-edit {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-edit:hover {
+        background: rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-delete {
+        background: rgba(234, 102, 102, 0.2);
+        color: #ea6666;
+        border: 1px solid rgba(234, 102, 102, 0.3);
+    }
+    
+    .btn-delete:hover {
+        background: rgba(234, 102, 102, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #b0b0b0;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .empty-state h3 {
+        color: white;
+        margin-bottom: 10px;
+    }
+    
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .page-link {
+        padding: 8px 15px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .page-link:hover {
+        background: rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .page-link.current {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        background: rgba(26, 26, 46, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 10000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    
+    .notification.success {
+        border-left: 4px solid #4CAF50;
+    }
+    
+    .notification.error {
+        border-left: 4px solid #f44336;
+    }
+    
+    /* Danger button for delete modal */
+    .modal-btn.danger {
+        background: linear-gradient(45deg, #f44336, #e53935);
+        color: white;
+    }
+    
+    .modal-btn.danger:hover {
+        background: linear-gradient(45deg, #e53935, #d32f2f);
+    }
+    
+    .warning-text {
+        color: #f44336 !important;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .song-item {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .song-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+        
+        .search-section {
+            flex-direction: column;
+        }
+        
+        .search-box {
+            min-width: 100%;
+        }
+        
+        .filter-group {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .filter-group select {
+            flex: 1;
+        }
+    }
+</style>
+{% endblock %}

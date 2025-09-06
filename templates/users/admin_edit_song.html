@@ -1,0 +1,737 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Edit Songs - Admin - LyricString{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_edit_song.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-edit"></i> Manage Songs</h1>
+        <p>Edit or delete songs in the LyricString database</p>
+        
+        <!-- Botón Add New Song con nuevo estilo -->
+        <div style="margin-top: 20px;">
+            <a href="{% url 'admin_add_song' %}" class="btn-primary">
+                <i class="fas fa-plus"></i>
+                Add New Song
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="songSearch" placeholder="Search songs by title or artist...">
+        </div>
+        
+        <div class="filter-group">
+            <select id="genreFilter">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                <option value="{{ genre.name }}">{{ genre.name }}</option>
+                {% endfor %}
+            </select>
+            
+            <select id="artistFilter">
+                <option value="">All Artists</option>
+                {% for artist in artists %}
+                <option value="{{ artist.name }}">{{ artist.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Songs List -->
+    <div class="songs-list">
+        {% for song in all_songs %}
+        <div class="song-item" data-title="{{ song.title|lower }}" data-artist="{{ song.artist.name|lower }}" data-genres="{% for genre in song.genres.all %}{{ genre.name|lower }} {% endfor %}">
+            <div class="song-info">
+                <div class="song-cover">
+                    {% if song.cover_image %}
+                    <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                    {% else %}
+                    <i class="fas fa-music"></i>
+                    {% endif %}
+                </div>
+                
+                <div class="song-details">
+                    <h3>{{ song.title }}</h3>
+                    <p class="artist">{{ song.artist.name }}</p>
+                    <div class="song-meta">
+                        <span class="year">{{ song.year }}</span>
+                        <span class="duration">{{ song.duration }}</span>
+                        <span class="genres">
+                            {% for genre in song.genres.all %}
+                            <span class="genre-tag">{{ genre.name }}</span>
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="song-actions">
+                <button class="btn-edit" onclick="editSong({{ song.id }})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn-delete" onclick="confirmDelete({{ song.id }}, '{{ song.title|escapejs }}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-music"></i>
+            <h3>No songs found</h3>
+            <p>Add your first song to get started</p>
+            <a href="{% url 'admin_add_song' %}" class="btn-primary">
+                <i class="fas fa-plus"></i> Add New Song
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if all_songs.has_other_pages %}
+    <div class="pagination">
+        {% if all_songs.has_previous %}
+        <a href="?page={{ all_songs.previous_page_number }}" class="page-link">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+
+        {% for num in all_songs.paginator.page_range %}
+            {% if all_songs.number == num %}
+            <span class="page-link current">{{ num }}</span>
+            {% else %}
+            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if all_songs.has_next %}
+        <a href="?page={{ all_songs.next_page_number }}" class="page-link">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h3>
+            <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete the song "<span id="deleteSongTitle"></span>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal('deleteModal')">
+                    Cancel
+                </button>
+                <button class="modal-btn danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search and filter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('songSearch');
+        const genreFilter = document.getElementById('genreFilter');
+        const artistFilter = document.getElementById('artistFilter');
+        const songItems = document.querySelectorAll('.song-item');
+        
+        function filterSongs() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedGenre = genreFilter.value.toLowerCase();
+            const selectedArtist = artistFilter.value.toLowerCase();
+            
+            songItems.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const artist = item.getAttribute('data-artist');
+                const genres = item.getAttribute('data-genres');
+                
+                const matchesSearch = title.includes(searchText) || artist.includes(searchText);
+                const matchesGenre = !selectedGenre || genres.includes(selectedGenre);
+                const matchesArtist = !selectedArtist || artist.includes(selectedArtist);
+                
+                if (matchesSearch && matchesGenre && matchesArtist) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        searchInput.addEventListener('input', filterSongs);
+        genreFilter.addEventListener('change', filterSongs);
+        artistFilter.addEventListener('change', filterSongs);
+    });
+    
+    // Edit song function
+    function editSong(songId) {
+        window.location.href = `{% url 'admin_edit_song_detail' 0 %}`.replace('0', songId);
+    }
+    
+    // Delete confirmation
+    let songToDelete = null;
+    
+    function confirmDelete(songId, songTitle) {
+        songToDelete = songId;
+        document.getElementById('deleteSongTitle').textContent = songTitle;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (!songToDelete) return;
+        
+        try {
+            const response = await fetch(`{% url 'delete_song' 0 %}`.replace('0', songToDelete), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Show success message and reload the page
+                showNotification('Song deleted successfully!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showNotification('Error deleting song: ' + data.error, 'error');
+            }
+        } catch (error) {
+            showNotification('Network error. Please try again.', 'error');
+        }
+        
+        closeModal('deleteModal');
+    });
+    
+    // Notification function
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    // Modal functions
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeModal(event.target.id);
+        }
+    }
+</script>
+
+<style>
+    /* Botones con nuevo estilo */
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 8px 15px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-edit {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-edit:hover {
+        background: rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-delete {
+        background: rgba(234, 102, 102, 0.2);
+        color: #ea6666;
+        border: 1px solid rgba(234, 102, 102, 0.3);
+    }
+    
+    .btn-delete:hover {
+        background: rgba(234, 102, 102, 0.3);
+    }
+
+    /* Search and Filter Styles */
+    .search-section {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        font-size: 0.95rem;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filter-group select {
+        padding: 12px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        cursor: pointer;
+        min-width: 120px;
+    }
+
+    .filter-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    /* Songs List Styles */
+    .songs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .song-item {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .song-item:hover {
+        border-color: rgba(102, 126, 234, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .song-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    .song-cover {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .song-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .song-cover i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .song-details {
+        flex: 1;
+    }
+
+    .song-details h3 {
+        color: white;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    .song-details .artist {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .song-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .song-meta span {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    .genre-tag {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+    }
+
+    .song-actions {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #888;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #555;
+    }
+
+    .empty-state h3 {
+        color: #e0e0e0;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 25px;
+        font-size: 1rem;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 30px;
+        padding: 20px 0;
+    }
+
+    .page-link {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .page-link:hover {
+        background: rgba(102, 126, 234, 0.2);
+        border-color: rgba(102, 126, 234, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .page-link.current {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border-color: rgba(102, 126, 234, 0.5);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: rgba(26, 26, 46, 0.95);
+        margin: 10% auto;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    .modal-content.small {
+        max-width: 400px;
+    }
+
+    .modal-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .close {
+        color: #888;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover {
+        color: white;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .modal-body p {
+        color: #e0e0e0;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .warning-text {
+        color: #e74c3c !important;
+        font-weight: 500;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 25px;
+    }
+
+    .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .modal-btn.primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .modal-btn.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-btn.danger {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    .modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 15px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10001;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.success {
+        background: rgba(46, 204, 113, 0.9);
+    }
+
+    .notification.error {
+        background: rgba(231, 76, 60, 0.9);
+    }
+
+    /* Animations */
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .search-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-group {
+            width: 100%;
+        }
+
+        .filter-group select {
+            flex: 1;
+        }
+
+        .song-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .song-info {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .song-meta {
+            justify-content: center;
+        }
+
+        .song-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modal-content {
+            margin: 20% 10px;
+            width: auto;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

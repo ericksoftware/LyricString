@@ -96,9 +96,9 @@
                 </div>
             </div>
             <div class="instrument-actions">
-                <button class="action-btn btn-primary">
-                    <i class="fas fa-play"></i> Start Learning
-                </button>
+                <a href="{% url 'instrument_songs' instrument.id %}" class="action-btn btn-primary" style="text-decoration: none;">
+                    <i class="fas fa-play"></i> Explore Songs
+                </a>
                 <button class="action-btn btn-secondary">
                     <i class="fas fa-heart"></i>
                 </button>

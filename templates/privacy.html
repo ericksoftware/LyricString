@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy - LyricString{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legal-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    
+    .legal-content {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+    
+    .legal-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .legal-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .legal-header p {
+        color: #b0b0b0;
+        font-size: 1.1rem;
+    }
+    
+    .legal-section {
+        margin-bottom: 30px;
+    }
+    
+    .legal-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: #667eea;
+        border-left: 4px solid #667eea;
+        padding-left: 15px;
+    }
+    
+    .legal-section p, .legal-section ul {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+    
+    .legal-section ul {
+        padding-left: 20px;
+    }
+    
+    .legal-section li {
+        margin-bottom: 8px;
+    }
+    
+    .last-updated {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #888;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <div class="legal-content">
+        <div class="legal-header">
+            <h1>Privacy Policy</h1>
+            <p>Last Updated: January 1, 2023</p>
+        </div>
+        
+        <div class="legal-section">
+            <p>At LyricString, we take your privacy seriously. This Privacy Policy describes how we collect, use, and share your personal information when you use our website and services.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>1. Information We Collect</h2>
+            <p>We collect information you provide directly to us, including:</p>
+            <ul>
+                <li><strong>Account Information:</strong> When you create an account, we collect your username, email address, password, and any other information you provide.</li>
+                <li><strong>Profile Information:</strong> You may choose to provide additional information for your public profile, such as a bio, location, website, and social media links.</li>
+                <li><strong>Content:</strong> We collect the content you create, upload, or post to our Service, including songs you save, liked content, and any comments.</li>
+                <li><strong>Communications:</strong> If you contact us directly, we may receive additional information about you.</li>
+            </ul>
+        </div>
+        
+        <div class="legal-section">
+            <h2>2. How We Use Your Information</h2>
+            <p>We use the information we collect to:</p>
+            <ul>
+                <li>Provide, maintain, and improve our Services;</li>
+                <li>Create and manage your account;</li>
+                <li>Personalize your experience and deliver content relevant to your interests;</li>
+                <li>Send you technical notices, updates, security alerts, and support messages;</li>
+                <li>Respond to your comments, questions, and requests;</li>
+                <li>Monitor and analyze trends, usage, and activities in connection with our Services;</li>
+                <li>Detect, investigate, and prevent fraudulent transactions and other illegal activities;</li>
+                <li>Comply with our legal obligations.</li>
+            </ul>
+        </div>
+        
+        <div class="legal-section">
+            <h2>3. How We Share Your Information</h2>
+            <p>We may share your information in the following ways:</p>
+            <ul>
+                <li><strong>With your consent:</strong> We will share personal information with third parties when we have your consent to do so.</li>
+                <li><strong>Service Providers:</strong> We may share your information with third-party vendors, consultants, and other service providers who need access to such information to carry out work on our behalf.</li>
+                <li><strong>Legal Requirements:</strong> We may disclose your information if required to do so by law or in the good faith belief that such action is necessary to comply with a legal obligation, protect and defend our rights or property, protect the personal safety of users of the Service, or protect against legal liability.</li>
+                <li><strong>Business Transfers:</strong> If we are involved in a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred as part of that transaction.</li>
+            </ul>
+        </div>
+        
+        <div class="legal-section">
+            <h2>4. Data Retention</h2>
+            <p>We will retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>5. Your Rights</h2>
+            <p>Depending on your location, you may have the following rights regarding your personal information:</p>
+            <ul>
+                <li>Access and receive a copy of your personal data</li>
+                <li>Rectify or update inaccurate or incomplete personal data</li>
+                <li>Delete your personal data</li>
+                <li>Restrict or object to the processing of your personal data</li>
+                <li>Data portability (receiving your data in a structured, commonly used format)</li>
+                <li>Withdraw consent at any time, where we rely on consent to process your personal data</li>
+            </ul>
+            <p>To exercise any of these rights, please contact us at privacy@lyricstring.com.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>6. Cookies and Similar Technologies</h2>
+            <p>We use cookies and similar tracking technologies to track activity on our Service and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier.</p>
+            <p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>7. Children's Privacy</h2>
+            <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If you are a parent or guardian and you are aware that your child has provided us with personal data, please contact us. If we become aware that we have collected personal data from children without verification of parental consent, we take steps to remove that information from our servers.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>8. Changes to This Privacy Policy</h2>
+            <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top of this Privacy Policy.</p>
+            <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>9. Contact Us</h2>
+            <p>If you have any questions about this Privacy Policy, please contact us:</p>
+            <ul>
+                <li>By email: privacy@lyricstring.com</li>
+                <li>By visiting our contact page on our website</li>
+            </ul>
+        </div>
+        
+        <div class="last-updated">
+            <p>Thank you for taking the time to read our Privacy Policy.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

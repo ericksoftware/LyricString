@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms of Service - LyricString{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legal-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    
+    .legal-content {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+    
+    .legal-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .legal-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .legal-header p {
+        color: #b0b0b0;
+        font-size: 1.1rem;
+    }
+    
+    .legal-section {
+        margin-bottom: 30px;
+    }
+    
+    .legal-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: #667eea;
+        border-left: 4px solid #667eea;
+        padding-left: 15px;
+    }
+    
+    .legal-section p, .legal-section ul {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+    
+    .legal-section ul {
+        padding-left: 20px;
+    }
+    
+    .legal-section li {
+        margin-bottom: 8px;
+    }
+    
+    .last-updated {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #888;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <div class="legal-content">
+        <div class="legal-header">
+            <h1>Terms of Service</h1>
+            <p>Last Updated: January 1, 2023</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using LyricString ("the Service"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>2. Use License</h2>
+            <p>Permission is granted to temporarily access and use LyricString for personal, non-commercial use only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+            <ul>
+                <li>Modify or copy the materials;</li>
+                <li>Use the materials for any commercial purpose or for any public display;</li>
+                <li>Attempt to reverse engineer any software contained on LyricString;</li>
+                <li>Remove any copyright or other proprietary notations from the materials; or</li>
+                <li>Transfer the materials to another person or "mirror" the materials on any other server.</li>
+            </ul>
+            <p>This license shall automatically terminate if you violate any of these restrictions and may be terminated by LyricString at any time.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>3. User Accounts</h2>
+            <p>When you create an account with us, you must provide accurate, complete, and up-to-date information. You are solely responsible for safeguarding your account password and for any activities or actions under your account.</p>
+            <p>You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>4. User Content</h2>
+            <p>Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, or other material ("Content"). You are responsible for the Content that you post on or through the Service, including its legality, reliability, and appropriateness.</p>
+            <p>By posting Content on or through the Service, you represent and warrant that: (i) the Content is yours (you own it) and/or you have the right to use it and the right to grant us the rights and license as provided in these Terms, and (ii) that the posting of your Content on or through the Service does not violate the privacy rights, publicity rights, copyrights, contract rights or any other rights of any person.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>5. Copyright Policy</h2>
+            <p>We respect the intellectual property rights of others. It is our policy to respond to any claim that Content posted on the Service infringes on the copyright or other intellectual property rights of any person.</p>
+            <p>If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to copyright@lyricstring.com, with the subject line: "Copyright Infringement" and include in your claim a detailed description of the alleged infringement.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>6. Limitations</h2>
+            <p>In no event shall LyricString or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on LyricString, even if LyricString or a LyricString authorized representative has been notified orally or in writing of the possibility of such damage.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>7. Revisions and Errata</h2>
+            <p>The materials appearing on LyricString could include technical, typographical, or photographic errors. LyricString does not warrant that any of the materials on its website are accurate, complete, or current. LyricString may make changes to the materials contained on its website at any time without notice.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>8. Links</h2>
+            <p>LyricString has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by LyricString of the site. Use of any such linked website is at the user's own risk.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>9. Modifications</h2>
+            <p>LyricString may revise these Terms of Service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these Terms of Service.</p>
+        </div>
+        
+        <div class="legal-section">
+            <h2>10. Governing Law</h2>
+            <p>These terms and conditions are governed by and construed in accordance with the laws of the United States and you irrevocably submit to the exclusive jurisdiction of the courts in that location.</p>
+        </div>
+        
+        <div class="last-updated">
+            <p>If you have any questions about these Terms, please contact us at legal@lyricstring.com.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

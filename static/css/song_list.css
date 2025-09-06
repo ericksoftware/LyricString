@@ -248,6 +248,30 @@
         font-size: 0.9rem;
     }
 
+    .song-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    }
+
+    .song-card-link:hover .song-card {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        border-color: rgba(102, 126, 234, 0.3);
+}
+
+.song-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.song-card-link:hover .song-card {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
     /* Responsive */
     @media (max-width: 1200px) {
         .songs-grid {

@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Songs with {{ instrument.name }} - LyricString{% endblock %}
+
+{% block extra_css %}
+<style>
+    .song-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .song-card-link:hover .song-card {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Estilos para la imagen de la canción */
+    .song-cover {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .song-cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .song-card:hover .song-cover-img {
+        transform: scale(1.05);
+    }
+    
+    .song-cover i {
+        font-size: 3rem;
+        color: rgba(255,255,255,0.8);
+        position: absolute;
+        z-index: 1;
+    }
+    
+    /* Mostrar ícono solo si no hay imagen */
+    .song-cover:has(.song-cover-img) i {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/song_list.css' %}">
+<div class="page-header">
+    <h1><i class="{{ instrument.icon_class }}"></i> {{ instrument.name }} Songs</h1>
+    <p>Explore all songs that feature the {{ instrument.name }}</p>
+</div>
+
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">{{ total_songs }}</div>
+            <div class="stat-label">Songs</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ total_artists }}</div>
+            <div class="stat-label">Artists</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ total_genres }}</div>
+            <div class="stat-label">Genres</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ total_instruments }}</div>
+            <div class="stat-label">Instruments</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search {{ instrument.name }} songs...">
+        <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
+    
+    <div class="filter-tags">
+        <span class="filter-tag active">All</span>
+        {% for genre in genres %}
+        <span class="filter-tag">{{ genre.name }}</span>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="songs-grid">
+    {% for song in songs %}
+    <a href="{% url 'song_detail' song.id %}" class="song-card-link">
+        <div class="song-card">
+            <div class="song-cover">
+                {% if song.cover_image %}
+                    <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="song-cover-img">
+                {% endif %}
+                <i class="fas fa-music"></i>
+                <div class="play-overlay">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="song-info">
+                <div class="song-title">{{ song.title }}</div>
+                <div class="song-artist">{{ song.artist.name }}</div>
+                <div class="song-details">
+                    <span><i class="fas fa-clock"></i> {{ song.duration|time:"i:s" }}</span>
+                    <span class="song-genre">
+                        {% for genre in song.genres.all %}
+                        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="song-actions">
+                    <button class="action-btn" title="Like">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="action-btn" title="Save">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="More options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="no-songs" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+        <i class="fas fa-music" style="font-size: 3rem; color: #667eea; margin-bottom: 20px;"></i>
+        <h3>No songs found for {{ instrument.name }}</h3>
+        <p>Check back later for new content!</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Search functionality
+    document.querySelector('.search-input').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            searchSongs();
+        }
+    });
+    
+    document.querySelector('.search-bar button').addEventListener('click', searchSongs);
+    
+    function searchSongs() {
+        const query = document.querySelector('.search-input').value.toLowerCase();
+        const songCards = document.querySelectorAll('.song-card-link');
+        
+        songCards.forEach(card => {
+            const songTitle = card.querySelector('.song-title').textContent.toLowerCase();
+            const songArtist = card.querySelector('.song-artist').textContent.toLowerCase();
+            
+            if (songTitle.includes(query) || songArtist.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Filter functionality
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.textContent.toLowerCase();
+            const songCards = document.querySelectorAll('.song-card-link');
+            
+            if (filter === 'all') {
+                songCards.forEach(card => card.style.display = 'block');
+                return;
+            }
+            
+            songCards.forEach(card => {
+                const genres = card.querySelector('.song-genre').textContent.toLowerCase();
+                if (genres.includes(filter)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

@@ -53,7 +53,7 @@
         </div>
         
         <div class="action-buttons">
-            <button class="action-btn primary">
+            <button id="play-song-btn" class="action-btn primary">
                 <i class="fas fa-play"></i> Play Song
             </button>
             <button class="action-btn secondary">
@@ -111,24 +111,63 @@
     </div>
 </div>
 
+<!-- Audio Player Section (initially hidden) -->
+<!-- Fixed Bottom Audio Player -->
+<div id="audio-player-section" class="audio-player-section">
+    <div class="audio-player">
+        <div class="song-info-mini">
+            {% if song.cover_image %}
+            <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="mini-cover">
+            {% else %}
+            <div class="mini-cover-placeholder">
+                <i class="fas fa-music"></i>
+            </div>
+            {% endif %}
+            <div class="mini-song-info">
+                <div class="mini-title">{{ song.title }}</div>
+                <div class="mini-artist">{{ song.artist.name }}</div>
+            </div>
+        </div>
+        
+        <div class="player-controls">
+            <button id="play-pause-btn" class="control-btn">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+                <input id="progress-slider" class="progress-slider" type="range" min="0" max="100" value="0">
+            </div>
+            <div class="time-display">
+                <span id="current-time">0:00</span> / 
+                <span id="total-time">{{ song.duration|time:"i:s" }}</span>
+            </div>
+            <div class="volume-control">
+                <button id="mute-btn" class="control-btn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <input id="volume-slider" class="volume-slider" type="range" min="0" max="100" value="80">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audio element (hidden) -->
+<audio id="song-audio">
+    {% if song.audio_file %}
+    <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+    {% endif %}
+    Your browser does not support the audio element.
+</audio>
+
 <div class="content-section">
     <h2 class="section-title">
         <i class="fas fa-file-alt"></i> Lyrics & Tabs
     </h2>
     
-    <div class="tabs-container">
-        <div class="tab-buttons">
-            <button class="tab-btn active" data-tab="lyrics">Lyrics</button>
-            {% if 'Electric Guitar' in tabs_by_instrument %}
-            <button class="tab-btn" data-tab="guitar-tabs">Guitar Tabs</button>
-            {% endif %}
-            {% if 'Bass Guitar' in tabs_by_instrument %}
-            <button class="tab-btn" data-tab="bass-tabs">Bass Tabs</button>
-            {% endif %}
-        </div>
-        
-        <div class="tab-content active" id="lyrics">
-            <div class="lyrics-container">
+    <div class="lyrics-tabs-container">
+        <div class="lyrics-column">
+            <h3 class="column-title">Lyrics</h3>
+            <div class="lyrics-content">
                 {% for section_type, sections in lyrics_by_section.items %}
                 {% for section in sections %}
                 {% if section.section_type != 'verse' or forloop.first %}
@@ -140,23 +179,149 @@
             </div>
         </div>
         
-        {% if 'Electric Guitar' in tabs_by_instrument %}
-        <div class="tab-content" id="guitar-tabs">
-            <div class="lyrics-container">
-                {{ tabs_by_instrument.Electric Guitar|linebreaksbr }}
+<div class="tabs-column">
+    <div class="tabs-selector">
+        <h3 class="column-title">Tabs</h3>
+        <div class="tab-buttons">
+            {% for instrument_name, tab_content in tabs_by_instrument.items %}
+            <button class="tab-btn {% if forloop.first %}active{% endif %}" 
+                    data-tab="{{ instrument_name|slugify }}-tabs">
+                {{ instrument_name }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="tabs-content">
+        {% for instrument_name, tab_content in tabs_by_instrument.items %}
+        <div class="tab-content {% if forloop.first %}active{% endif %}" 
+             id="{{ instrument_name|slugify }}-tabs">
+            <div class="tab-content-styled">  <!-- Add this wrapper -->
+                <pre>{{ tab_content }}</pre>
             </div>
         </div>
-        {% endif %}
-        
-        {% if 'Bass Guitar' in tabs_by_instrument %}
-        <div class="tab-content" id="bass-tabs">
-            <div class="lyrics-container">
-                {{ tabs_by_instrument.Bass Guitar|linebreaksbr }}
-            </div>
-        </div>
-        {% endif %}
+        {% endfor %}
     </div>
 </div>
 
-<!-- Rest of your JavaScript remains the same -->
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const audio = document.getElementById('song-audio');
+    const playSongBtn = document.getElementById('play-song-btn');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const muteBtn = document.getElementById('mute-btn');
+    const progressSlider = document.getElementById('progress-slider');
+    const progressBar = document.getElementById('progress-bar');
+    const volumeSlider = document.getElementById('volume-slider');
+    const currentTimeEl = document.getElementById('current-time');
+    const totalTimeEl = document.getElementById('total-time');
+    const audioPlayerSection = document.getElementById('audio-player-section');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+
+    // Show audio player when "Play Song" is clicked
+    playSongBtn.addEventListener('click', function() {
+        audioPlayerSection.style.display = 'flex';
+        audio.play().catch(error => {
+            console.log('Audio play failed:', error);
+        });
+        updatePlayPauseIcon();
+    });
+
+    // Play/Pause functionality
+    playPauseBtn.addEventListener('click', function() {
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+        updatePlayPauseIcon();
+    });
+
+    // Mute functionality
+    muteBtn.addEventListener('click', function() {
+        audio.muted = !audio.muted;
+        updateMuteIcon();
+    });
+
+    // Volume control
+    volumeSlider.addEventListener('input', function() {
+        audio.volume = this.value / 100;
+        updateMuteIcon();
+    });
+
+    // Progress slider
+    progressSlider.addEventListener('input', function() {
+        const seekTime = audio.duration * (this.value / 100);
+        audio.currentTime = seekTime;
+    });
+
+    // Update progress as audio plays
+    audio.addEventListener('timeupdate', function() {
+        if (audio.duration) {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressSlider.value = progress;
+            progressBar.style.width = progress + '%';
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        }
+    });
+
+    // Update total time when metadata is loaded
+    audio.addEventListener('loadedmetadata', function() {
+        if (audio.duration) {
+            totalTimeEl.textContent = formatTime(audio.duration);
+        }
+    });
+
+    // Format time (seconds to MM:SS)
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    // Update play/pause icon
+    function updatePlayPauseIcon() {
+        const icon = playPauseBtn.querySelector('i');
+        if (audio.paused) {
+            icon.className = 'fas fa-play';
+        } else {
+            icon.className = 'fas fa-pause';
+        }
+    }
+
+    // Update mute icon
+    function updateMuteIcon() {
+        const icon = muteBtn.querySelector('i');
+        if (audio.muted || audio.volume === 0) {
+            icon.className = 'fas fa-volume-mute';
+        } else if (audio.volume < 0.5) {
+            icon.className = 'fas fa-volume-down';
+        } else {
+            icon.className = 'fas fa-volume-up';
+        }
+    }
+
+    // Initialize icons
+    updatePlayPauseIcon();
+    updateMuteIcon();
+});
+</script>
 {% endblock %}

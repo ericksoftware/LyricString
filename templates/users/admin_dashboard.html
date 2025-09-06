@@ -158,22 +158,30 @@
             </div>
             <div class="card-content">
                 <div class="action-grid">
-                    <a href="/admin/content/song/add/" class="action-btn">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Song</span>
-                    </a>
-                    <a href="/admin/content/artist/add/" class="action-btn">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Add Artist</span>
-                    </a>
-                    <a href="/admin/users/customuser/" class="action-btn">
+                    <button class="action-btn" onclick="openManageSongsModal()">
+                        <i class="fas fa-music"></i>
+                        <span>Manage Songs</span>
+                    </button>
+
+                    <button class="action-btn" onclick="openManageArtistsModal()">
+                        <i class="fas fa-user"></i>
+                        <span>Manage Artists</span>
+                    </button>
+
+                    <button class="action-btn" onclick="openManageUsersModal()">
                         <i class="fas fa-users"></i>
                         <span>Manage Users</span>
-                    </a>
-                    <a href="/admin/content/genre/add/" class="action-btn">
+                    </button>
+
+                    <button class="action-btn" onclick="openManageGenresModal()">
                         <i class="fas fa-tag"></i>
-                        <span>Add Genre</span>
-                    </a>
+                        <span>Manage Genres</span>
+                    </button>
+
+                    <button class="action-btn" onclick="openManageInstrumentsModal()">
+                        <i class="fas fa-guitar"></i>
+                        <span>Manage Instruments</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -204,6 +212,30 @@
         </div>
     </div>
 </div>
+
+<!-- Small Modal for Manage Songs -->
+<!-- <div id="manageSongsModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <h3><i class="fas fa-music"></i> Manage Songs</h3>
+            <span class="close" onclick="closeModal('manageSongsModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>What would you like to do with songs?</p>
+            <div class="modal-actions">
+                <a href="{% url 'admin_add_song' %}" class="modal-btn primary">
+                    <i class="fas fa-plus"></i>
+                    Add New Song
+                </a>
+                <a href="{% url 'admin_edit_song' %}" class="modal-btn secondary">
+                    <i class="fas fa-edit"></i>
+                    Edit Existing Songs
+                </a>
+            </div>
+        </div>
+    </div>
+</div> -->
+
 
 <!-- Chart.js for graphs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -244,5 +276,168 @@
             }
         });
     });
+
+    // Modal functions
+    // function openManageSongsModal() {
+    //     document.getElementById('manageSongsModal').style.display = 'block';
+    // }
+
+    function openManageSongsModal() {
+        window.location.href = "{% url 'admin_edit_song' %}";
+    }
+
+    function openManageArtistsModal() {
+        window.location.href = "{% url 'manage_artists' %}";
+    }
+
+    function openManageUsersModal() {
+        window.location.href = "{% url 'manage_users' %}";
+    }
+
+    function openManageGenresModal() {
+        window.location.href = "{% url 'manage_genres' %}";
+    }
+
+    function openManageInstrumentsModal() {
+        window.location.href = "{% url 'manage_instruments' %}";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modals = ['manageSongsModal', 'manageArtistsModal', 'manageUsersModal', 'manageGenresModal', 'manageInstrumentsModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                closeModal(modalId);
+            }
+        });
+    }
 </script>
+
+<style>
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: rgba(26, 26, 46, 0.95);
+        margin: 15% auto;
+        padding: 0;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+    
+    .modal-content.small {
+        width: 400px;
+        max-width: 90%;
+    }
+
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(26, 26, 46, 0.95);
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .close {
+        color: #b0b0b0;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover {
+        color: white;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+    
+    .modal-body p {
+        color: #b0b0b0;
+        margin-bottom: 25px;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .modal-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .modal-btn.primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .modal-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .modal-btn.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .modal-content.small {
+            width: 95%;
+            margin: 20% auto;
+        }
+        
+        .modal-actions {
+            flex-direction: column;
+        }
+    }
+</style>
 {% endblock %}

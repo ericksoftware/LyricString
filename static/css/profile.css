@@ -22,20 +22,70 @@
         z-index: -1;
     }
 
-    .profile-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 3rem;
-        color: white;
-        position: relative;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    }
+/* Estilos para la imagen de perfil */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+    color: white;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    overflow: hidden; /* Asegura que la imagen no se salga */
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen al contenedor */
+    border-radius: 50%;
+}
+
+.profile-avatar i {
+    position: absolute;
+    z-index: 1;
+}
+
+/* Ocultar ícono cuando hay imagen */
+.profile-avatar:has(img) i {
+    display: none;
+}
+
+/* Estilos para miniaturas de canciones */
+.mini-song-cover {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    overflow: hidden; /* Asegura que la imagen no se salga */
+}
+
+.mini-song-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen al contenedor */
+    border-radius: 8px;
+}
+
+.mini-song-cover i {
+    position: absolute;
+    z-index: 1;
+}
+
+/* Ocultar ícono cuando hay imagen */
+.mini-song-cover:has(img) i {
+    display: none;
+}
 
     .profile-info h1 {
         color: white;

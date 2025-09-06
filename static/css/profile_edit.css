@@ -167,10 +167,28 @@
     color: white;
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* Asegura que la imagen no se salga */
     cursor: pointer;
     transition: transform 0.3s ease;
 }
+
+.current-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen al contenedor */
+    border-radius: 50%;
+}
+
+.current-avatar i {
+    position: absolute;
+    z-index: 1;
+}
+
+/* Ocultar ícono cuando hay imagen */
+.current-avatar:has(img) i {
+    display: none;
+}
+
 
 .current-avatar:hover {
     transform: scale(1.05);
@@ -385,3 +403,4 @@ input:checked + .slider:before {
         justify-content: center;
     }
 }
+

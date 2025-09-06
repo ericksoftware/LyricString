@@ -224,6 +224,9 @@
     color: #667eea;
     text-decoration: none;
     transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
 }
 
 .action-btn:hover {
@@ -303,3 +306,4 @@
         font-size: 2rem;
     }
 }
+
